@@ -28,7 +28,7 @@ public class TileMap extends GameEntity {
 		this.sprites = sprites;
 		try {
 
-			loadMap();
+			readMapFromFile();
 			randomTile();
 			
 		} catch (IOException e) {
@@ -37,7 +37,7 @@ public class TileMap extends GameEntity {
 		}
 	}
 	
-	public void loadMap() throws IOException {
+	public void readMapFromFile() throws IOException {
 	      Scanner sc = new Scanner(new BufferedReader(new FileReader(GameConfig.FILE_DEMOMAP)));
 	      int rows = 32;
 	      int columns = 18;
