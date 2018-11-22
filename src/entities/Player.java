@@ -5,8 +5,8 @@ import java.awt.geom.Rectangle2D;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
+import behaviour.PlayerMovement;
 import config.GameConfig;
 
 public class Player extends GameEntity {
@@ -18,10 +18,9 @@ public class Player extends GameEntity {
 	// previous position during moving to a new tile
 	private Point2D oldpos = new Point2D.Double(0, 0);
 	// keep moving into same direction until new tile is reached
-	private String lastmoved = null;
-	//collides
+	private PlayerMovement lastmoved = PlayerMovement.NONE;
+	// collides
 	private boolean colliding;
-
 
 	public Player() {
 		super(new Point2D.Double());
@@ -49,7 +48,7 @@ public class Player extends GameEntity {
 		moving = false;
 
 	}
-	
+
 	public boolean checkMapBounds() {
 		if (collisionRect.getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE) {
 			return true;
@@ -59,66 +58,81 @@ public class Player extends GameEntity {
 			return true;
 		} else if (collisionRect.getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE) {
 			return true;
-		}else return false;
-	}
-
-	public void handleInput(GameContainer gc) {
-
-		if (!moving) {
-			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
-				walkTowardsTile("RIGHT");
-			} else if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
-				walkTowardsTile("DOWN");
-			} else if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
-				walkTowardsTile("LEFT");
-			} else if (gc.getInput().isKeyDown(Input.KEY_UP)) {
-				walkTowardsTile("UP");
-			}
-		} else {
-			walkTowardsTile(lastmoved);
-		}
+		} else
+			return false;
 	}
 
 	// TODO: minimize
-	public boolean walkTowardsTile(String dir) {
+	public void walkTowardsTile(PlayerMovement direction) {
 		moving = true;
-		if (dir == "RIGHT") {
+		if (direction == PlayerMovement.RIGHT) {
 			if (pixelPosition.getX() < oldpos.getX() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED, pixelPosition.getY());
-				lastmoved = dir;
+				lastmoved = direction;
 				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
-				return true;
+				return;
 			}
-		} else if (!colliding && dir == "DOWN") {
+		} else if (direction == PlayerMovement.DOWN) {
 			if (pixelPosition.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() + GameConfig.PLAYER_SPEED);
-				lastmoved = dir;
+				lastmoved = direction;
 				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
-				return true;
+				return;
 			}
-		} else if (!colliding && dir == "LEFT") {
+		} else if (direction == PlayerMovement.LEFT) {
 			if (pixelPosition.getX() > oldpos.getX() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() - GameConfig.PLAYER_SPEED, pixelPosition.getY());
-				lastmoved = dir;
+				lastmoved = direction;
 				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
-				return true;
+				return;
 			}
-		} else if (!colliding && dir == "UP") {
+		} else if (direction == PlayerMovement.UP) {
 			if (pixelPosition.getY() > oldpos.getY() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() - GameConfig.PLAYER_SPEED);
-				lastmoved = dir;
+				lastmoved = direction;
 				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
-				return true;
+				return;
 			}
 		}
 
 		oldpos.setLocation(getPosition());
 		moving = false;
-		return false;
+	}
+
+	public boolean isMoving() {
+		return moving;
+	}
+
+	public void setMoving(boolean moving) {
+		this.moving = moving;
+	}
+
+	public Point2D getOldpos() {
+		return oldpos;
+	}
+
+	public void setOldpos(Point2D oldpos) {
+		this.oldpos = oldpos;
+	}
+
+	public PlayerMovement getLastmoved() {
+		return lastmoved;
+	}
+
+	public void setLastmoved(PlayerMovement lastmoved) {
+		this.lastmoved = lastmoved;
+	}
+
+	public boolean isColliding() {
+		return colliding;
+	}
+
+	public void setColliding(boolean colliding) {
+		this.colliding = colliding;
 	}
 
 	public int getScore() {

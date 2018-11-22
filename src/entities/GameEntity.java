@@ -12,6 +12,7 @@ public abstract class GameEntity {
 	protected Point2D pixelPosition;
 	protected Point2D gridPosition;
 	protected Rectangle2D collisionRect;
+	protected boolean collidable;
 
 	public GameEntity() {
 
@@ -35,6 +36,14 @@ public abstract class GameEntity {
 
 	public Point2D getPosition() {
 		return pixelPosition;
+	}
+
+	public boolean isCollidable() {
+		return collidable;
+	}
+
+	public void setCollidable(boolean collidable) {
+		this.collidable = collidable;
 	}
 
 	public void setPosition(Point2D position) {
@@ -65,5 +74,4 @@ public abstract class GameEntity {
 		this.collisionRect = collisionRect;
 	}
 
-	
 }

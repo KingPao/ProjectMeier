@@ -16,7 +16,6 @@ import entities.GameEntity;
  */
 public class Tile extends GameEntity {
 
-	private boolean collidable;
 	private Image tileTexture;
 
 	public Tile(Image image, int x, int y) {
@@ -52,4 +51,3 @@ public class Tile extends GameEntity {
 		this.collidable = collidable;
 	}
 }
-

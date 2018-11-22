@@ -2,7 +2,9 @@ package app;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
+import behaviour.PlayerMovement;
 import config.GameConfig;
 import entities.GameEntity;
 import entities.Player;
@@ -39,14 +41,29 @@ public class GameLevel extends GameEntity {
 				}
 			}
 		}
-
 	}
 
 	@Override
 	public void tick(GameContainer gc) {
-		player.handleInput(gc);
+		handleInput(gc);
 		checkCollisions();
+	}
 
+	public void handleInput(GameContainer gc) {
+
+		if (!player.isMoving()) {
+			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
+				player.walkTowardsTile(PlayerMovement.RIGHT);
+			} else if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
+				player.walkTowardsTile(PlayerMovement.DOWN);
+			} else if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
+				player.walkTowardsTile(PlayerMovement.LEFT);
+			} else if (gc.getInput().isKeyDown(Input.KEY_UP)) {
+				player.walkTowardsTile(PlayerMovement.UP);
+			}
+		} else {
+			player.walkTowardsTile(player.getLastmoved());
+		}
 	}
 
 	public Player getPlayer() {

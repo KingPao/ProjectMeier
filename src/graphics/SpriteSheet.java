@@ -23,10 +23,11 @@ public class SpriteSheet {
 		this.tileSprites = new Image[8][6];
 
 		for (int x = 0; x < tileSprites.length; x++) {
-			for(int y = 0; y<tileSprites[x].length; y++) {
-				tileSprites[x][y] = spriteSheet.getSubImage(x * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * x), y * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * y),
-						GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
-				
+			for (int y = 0; y < tileSprites[x].length; y++) {
+				tileSprites[x][y] = spriteSheet.getSubImage(x * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * x),
+						y * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * y), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
+
 			}
 		}
 	}

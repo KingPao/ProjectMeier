@@ -23,7 +23,7 @@ public class TileMap extends GameEntity {
 
 	public TileMap(SpriteSheet sprites) {
 		this.sprites = sprites;
-		
+
 		try {
 			loadMap();
 			randomTile();
