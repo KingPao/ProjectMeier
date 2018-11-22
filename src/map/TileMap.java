@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 import config.GameConfig;
 import entities.GameEntity;
@@ -27,14 +26,9 @@ public class TileMap extends GameEntity {
 
 
 		try {
-
-
 			readMapFromFile();
-			randomTile();
-
-
+			generateMap();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -50,7 +44,7 @@ public class TileMap extends GameEntity {
 
 
 		coordinateMap = new Point[columns][rows];
-//TODO:WTF
+
 		for (int y = 0; y < rows; y++) {
 			String line = sc.nextLine();
 			String sprites[] = line.split(";");
@@ -66,26 +60,7 @@ public class TileMap extends GameEntity {
 		
 	}
 
-
-//	public void readMapFromFile() throws IOException {
-//		@SuppressWarnings("resource")
-//		Scanner sc = new Scanner(new BufferedReader(new FileReader(GameConfig.FILE_DEMOMAP)));
-//		int rows = 32;
-//		int columns = 18;
-//		intMap = new int[columns][rows];
-//		while (sc.hasNextLine()) {
-//			for (int i = 0; i < intMap.length; i++) {
-//				String[] line = sc.nextLine().trim().split(" ");
-//				for (int j = 0; j < line.length; j++) {
-//					intMap[i][j] = Integer.parseInt(line[j]);
-//				}
-//			}
-//		}
-//	}
-
-	void randomTile() {
-
-
+	void generateMap() {
 		tileMap = new Tile[columns][rows];
 
 		for (int y = 0; y < rows; y++) {
@@ -93,32 +68,23 @@ public class TileMap extends GameEntity {
 				int spriteX = coordinateMap[x][y].x;
 				int spriteY = coordinateMap[x][y].y;
 				tileMap[x][y] = new Tile(sprites.getTileTextures()[spriteX][spriteY].getTileTexture(), x, y);
-				//System.out.println(spriteX + "  " + spriteY);
-				//tileMap[x][y] = new Tile(sprites.getTileTextures()[0][0].getTileTexture(), x, y);
-				
+				if(spriteX == 7 && spriteY == 3) {
+					tileMap[x][y].setCollidable(true);
+				}
 
 			}
 		}
-
 	}
-
-	public void randomizeMap() {
-
-	}
-
 
 	@Override
 	public void render(Graphics g) {
 		g.setDrawMode(Graphics.MODE_NORMAL);
 		sprites.getSpriteSheet().startUse();
 
-
-
 		for (int x = 0; x < GameConfig.SCREEN_WIDTH / GameConfig.TILE_SIZE; x++) {
 			for (int y = 0; y < GameConfig.SCREEN_HEIGHT / GameConfig.TILE_SIZE; y++) {
 				tileMap[x][y].getTileTexture().drawEmbedded(x * GameConfig.TILE_SIZE, y * GameConfig.TILE_SIZE, GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
-
 			}
 		}
 		sprites.getSpriteSheet().endUse();
@@ -129,8 +95,6 @@ public class TileMap extends GameEntity {
 
 	}
 
-
-
 	public Tile[][] getTileMap() {
 		return tileMap;
 	}
@@ -138,8 +102,6 @@ public class TileMap extends GameEntity {
 	public void setTileMap(Tile[][] tileMap) {
 		this.tileMap = tileMap;
 	}
-
-
 
 	public SpriteSheet getSprites() {
 		return sprites;
