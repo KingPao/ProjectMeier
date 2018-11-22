@@ -138,4 +138,3 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/git,java,windows,eclipse
-/target/
