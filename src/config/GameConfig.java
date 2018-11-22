@@ -13,7 +13,7 @@ public class GameConfig {
 
 	// FILES
 	public static final String SPRITESHEET_MAP = "res/desert.png";
-	public static final String FILE_DEMOMAP = "res/demomap_coordinates.csv";
+	public static final String FILE_DEMOMAP = "res/demomap.txt";
 
 	// TILES
 	public static final int TILE_COUNT = 48;
