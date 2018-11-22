@@ -10,16 +10,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import config.GameConfig;
-import entities.Player;
-import graphics.SpriteSheet;
-import map.TileMap;
 
 public class GameApp extends BasicGame {
 
 	private boolean gameover;
-	private Player player;
+	private GameLevel level;
 	private int time;
-	private TileMap map;
 
 	public GameApp(String gamename) {
 		super(gamename);
@@ -28,15 +24,14 @@ public class GameApp extends BasicGame {
 	@Override
 	public void init(GameContainer gc) throws SlickException {
 		gameover = false;
-		map = new TileMap(new SpriteSheet(GameConfig.SPRITESHEET_MAP));
+		level = new GameLevel();
 
-		player = new Player();
 	}
 
 	@Override
 	public void update(GameContainer gc, int i) throws SlickException {
 		if (!gameover) {
-			player.tick(gc);
+			level.tick(gc);
 			time += i;
 		}
 
@@ -49,17 +44,17 @@ public class GameApp extends BasicGame {
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		if (!gameover) {
-			map.render(g);
-			player.render(g);
+			level.render(g);
 			printScreen(g);
+			
 		}
 	}
 
 	public void printScreen(Graphics g) {
 		g.drawString("Time left: " + String.valueOf(GameConfig.MAX_TIME - time / 1000), 400, 10);
-		g.drawString(String.valueOf(Math.round(player.getPosition().getX())) + "/"
-				+ String.valueOf(Math.round(player.getPosition().getY())), 100, 10);
-		g.drawString("Score: " + String.valueOf(player.getScore()), 250, 10);
+		g.drawString(String.valueOf(Math.round(level.getPlayer().getPosition().getX())) + "/"
+				+ String.valueOf(Math.round(level.getPlayer().getPosition().getY())), 100, 10);
+		g.drawString("Score: " + String.valueOf(level.getPlayer().getScore()), 250, 10);
 	}
 
 	public static void main(String[] args) {

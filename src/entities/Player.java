@@ -1,6 +1,7 @@
 package entities;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,56 +13,53 @@ public class Player extends GameEntity {
 
 	// states
 	private int score;
+	// currently moving
 	private boolean moving;
+	// previous position during moving to a new tile
 	private Point2D oldpos = new Point2D.Double(0, 0);
+	// keep moving into same direction until new tile is reached
 	private String lastmoved = null;
-	private boolean rightcl, downcl, leftcl, upcl = false;
+	//collides
+	private boolean colliding;
+
 
 	public Player() {
 		super(new Point2D.Double());
 		pixelPosition.setLocation(0, 0);
 		this.score = 0;
+		this.collisionRect = new Rectangle2D.Double(0, 0, GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 	}
 
 	@Override
 	public void tick(GameContainer gc) {
-		handleInput(gc);
-		checkCollision();
+
 	}
 
 	@Override
 	public void render(Graphics g) {
 		g.setDrawMode(Graphics.MODE_NORMAL);
 		g.fillOval((float) pixelPosition.getX(), (float) pixelPosition.getY(), 32, 32);
+		g.drawRect((float) collisionRect.getX(), (float) collisionRect.getY(), (float) collisionRect.getWidth(),
+				(float) collisionRect.getHeight());
 	}
 
-	public void checkCollision() {
-		if (getPosition().getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE) {
-			setPosition(new Point2D.Double(GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE, getPosition().getY()));
-			oldpos = new Point2D.Double(getPosition().getX(), getPosition().getY());
-			rightcl = true;
-			moving = false;
-		} else if (getPosition().getX() < 0) {
-			setPosition(new Point2D.Double(0, getPosition().getY()));
-			oldpos = new Point2D.Double(getPosition().getX(), getPosition().getY());
-			leftcl = true;
-			moving = false;
-		} else if (getPosition().getY() < 0) {
-			setPosition(new Point2D.Double(getPosition().getX(), 0));
-			oldpos = new Point2D.Double(getPosition().getX(), getPosition().getY());
-			upcl = true;
-			moving = false;
-		} else if (getPosition().getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE) {
-			setPosition(new Point2D.Double(getPosition().getX(), GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE));
-			oldpos = new Point2D.Double(getPosition().getX(), getPosition().getY());
-			downcl = true;
-			moving = false;
-		}
+	public void blockMovement() {
+		getPosition().setLocation(oldpos);
+		collisionRect.setFrame(getPosition().getX(), getPosition().getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+		moving = false;
 
-		rightcl = false;
-		leftcl = false;
-		downcl = false;
-		upcl = false;
+	}
+	
+	public boolean checkMapBounds() {
+		if (collisionRect.getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE) {
+			return true;
+		} else if (collisionRect.getX() < 0) {
+			return true;
+		} else if (collisionRect.getY() < 0) {
+			return true;
+		} else if (collisionRect.getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE) {
+			return true;
+		}else return false;
 	}
 
 	public void handleInput(GameContainer gc) {
@@ -81,36 +79,44 @@ public class Player extends GameEntity {
 		}
 	}
 
-	// TODO: Use vector for point manipulation
+	// TODO: minimize
 	public boolean walkTowardsTile(String dir) {
 		moving = true;
-		if (!rightcl && dir == "RIGHT") {
+		if (dir == "RIGHT") {
 			if (pixelPosition.getX() < oldpos.getX() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED, pixelPosition.getY());
 				lastmoved = dir;
+				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
 				return true;
 			}
-		} else if (!downcl && dir == "DOWN") {
+		} else if (!colliding && dir == "DOWN") {
 			if (pixelPosition.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() + GameConfig.PLAYER_SPEED);
 				lastmoved = dir;
+				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
 				return true;
 			}
-		} else if (!leftcl && dir == "LEFT") {
+		} else if (!colliding && dir == "LEFT") {
 			if (pixelPosition.getX() > oldpos.getX() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() - GameConfig.PLAYER_SPEED, pixelPosition.getY());
 				lastmoved = dir;
+				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
 				return true;
 			}
-		} else if (!upcl && dir == "UP") {
+		} else if (!colliding && dir == "UP") {
 			if (pixelPosition.getY() > oldpos.getY() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() - GameConfig.PLAYER_SPEED);
 				lastmoved = dir;
+				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
 				return true;
 			}
 		}
 
-		oldpos.setLocation(pixelPosition.getX(), pixelPosition.getY());
+		oldpos.setLocation(getPosition());
 		moving = false;
 		return false;
 	}
@@ -121,6 +127,10 @@ public class Player extends GameEntity {
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	public boolean collidesWith(Rectangle2D rect) {
+		return collisionRect.intersects(rect);
 	}
 
 }
