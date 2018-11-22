@@ -4,6 +4,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import config.GameConfig;
+import map.Tile;
 
 public class SpriteSheet {
 
@@ -11,7 +12,7 @@ public class SpriteSheet {
 	private Image spriteSheet;
 
 	// the sub-images of our sprite sheet
-	private Image[][] tileSprites;
+	private Tile[][] tileTextures;
 
 	// TODO: beautify
 	public SpriteSheet(String path) {
@@ -20,13 +21,14 @@ public class SpriteSheet {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-		this.tileSprites = new Image[8][6];
+		tileTextures = new Tile[8][6];
 
-		for (int x = 0; x < tileSprites.length; x++) {
-			for (int y = 0; y < tileSprites[x].length; y++) {
-				tileSprites[x][y] = spriteSheet.getSubImage(x * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * x),
+		for (int x = 0; x < tileTextures.length; x++) {
+			for (int y = 0; y < tileTextures[x].length; y++) {
+				tileTextures[x][y] = new Tile(spriteSheet.getSubImage(x * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * x),
 						y * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * y), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
+						GameConfig.TILE_SIZE), x, y);
+				
 
 			}
 		}
@@ -40,12 +42,16 @@ public class SpriteSheet {
 		this.spriteSheet = spriteSheet;
 	}
 
-	public Image[][] getTileSprites() {
-		return tileSprites;
+	public Tile[][] getTileTextures() {
+		return tileTextures;
 	}
 
-	public void setTileSprites(Image[][] tileSprites) {
-		this.tileSprites = tileSprites;
+	public void setTileTextures(Tile[][] tileTextures) {
+		this.tileTextures = tileTextures;
 	}
+
+
+
+
 
 }

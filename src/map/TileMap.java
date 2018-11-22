@@ -48,20 +48,22 @@ public class TileMap extends GameEntity {
 		columns = Integer.parseInt(mapsSize[0]);
 		rows = Integer.parseInt(mapsSize[1]);
 
-		coordinateMap = new Point[columns][rows];
 
+		coordinateMap = new Point[columns][rows];
+//TODO:WTF
 		for (int y = 0; y < rows; y++) {
 			String line = sc.nextLine();
 			String sprites[] = line.split(";");
 
 			for (int x = 0; x < columns; x++) {
 				int spriteX = Integer.parseInt(sprites[x].split("\\|")[0]);
-				int spriteY = Integer.parseInt(sprites[y].split("\\|")[1]);
-
+				int spriteY = Integer.parseInt(sprites[x].split("\\|")[1]);
 				coordinateMap[x][y] = new Point(spriteX, spriteY);
-			}
 
+			}
 		}
+		
+		
 	}
 
 
@@ -88,14 +90,14 @@ public class TileMap extends GameEntity {
 
 		for (int y = 0; y < rows; y++) {
 			for (int x = 0; x < columns; x++) {
-
-
 				int spriteX = coordinateMap[x][y].x;
 				int spriteY = coordinateMap[x][y].y;
-				tileMap[x][y] = new Tile(sprites.getTileSprites()[spriteX][spriteY], x, y);
+				tileMap[x][y] = new Tile(sprites.getTileTextures()[spriteX][spriteY].getTileTexture(), x, y);
+				//System.out.println(spriteX + "  " + spriteY);
+				//tileMap[x][y] = new Tile(sprites.getTileTextures()[0][0].getTileTexture(), x, y);
+				
 
 			}
-			System.err.println();
 		}
 
 	}

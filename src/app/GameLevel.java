@@ -37,6 +37,7 @@ public class GameLevel extends GameEntity {
 		for (Tile[] tiles : map.getTileMap()) {
 			for (Tile tile : tiles) {
 				if (tile.isCollidable() && player.collidesWith(tile.getCollisionRect())) {
+
 					player.blockMovement();
 				}
 			}
