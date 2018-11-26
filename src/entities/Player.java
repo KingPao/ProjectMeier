@@ -1,118 +1,138 @@
 package entities;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
+import behaviour.PlayerMovement;
 import config.GameConfig;
 
 public class Player extends GameEntity {
 
 	// states
 	private int score;
+	// currently moving
 	private boolean moving;
+	// previous position during moving to a new tile
 	private Point2D oldpos = new Point2D.Double(0, 0);
-	private String lastmoved = null;
-	private boolean rightcl, downcl, leftcl, upcl = false;
+	// keep moving into same direction until new tile is reached
+	private PlayerMovement lastmoved = PlayerMovement.NONE;
+	// collides
+	private boolean colliding;
 
 	public Player() {
 		super(new Point2D.Double());
 		pixelPosition.setLocation(0, 0);
 		this.score = 0;
+		this.collisionRect = new Rectangle2D.Double(0, 0, GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 	}
 
 	@Override
 	public void tick(GameContainer gc) {
-		handleInput(gc);
-		checkCollision();
+
 	}
 
 	@Override
 	public void render(Graphics g) {
 		g.setDrawMode(Graphics.MODE_NORMAL);
 		g.fillOval((float) pixelPosition.getX(), (float) pixelPosition.getY(), 32, 32);
+		g.drawRect((float) collisionRect.getX(), (float) collisionRect.getY(), (float) collisionRect.getWidth(),
+				(float) collisionRect.getHeight());
 	}
 
-	public void checkCollision() {
-		if (getPosition().getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE) {
-			setPosition(new Point2D.Double(GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE, getPosition().getY()));
-			oldpos = new Point2D.Double(getPosition().getX(), getPosition().getY());
-			rightcl = true;
-			moving = false;
-		} else if (getPosition().getX() < 0) {
-			setPosition(new Point2D.Double(0, getPosition().getY()));
-			oldpos = new Point2D.Double(getPosition().getX(), getPosition().getY());
-			leftcl = true;
-			moving = false;
-		} else if (getPosition().getY() < 0) {
-			setPosition(new Point2D.Double(getPosition().getX(), 0));
-			oldpos = new Point2D.Double(getPosition().getX(), getPosition().getY());
-			upcl = true;
-			moving = false;
-		} else if (getPosition().getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE) {
-			setPosition(new Point2D.Double(getPosition().getX(), GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE));
-			oldpos = new Point2D.Double(getPosition().getX(), getPosition().getY());
-			downcl = true;
-			moving = false;
-		}
+	public void blockMovement() {
+		getPosition().setLocation(oldpos);
+		collisionRect.setFrame(getPosition().getX(), getPosition().getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+		moving = false;
 
-		rightcl = false;
-		leftcl = false;
-		downcl = false;
-		upcl = false;
 	}
 
-	public void handleInput(GameContainer gc) {
-
-		if (!moving) {
-			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
-				walkTowardsTile("RIGHT");
-			} else if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
-				walkTowardsTile("DOWN");
-			} else if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
-				walkTowardsTile("LEFT");
-			} else if (gc.getInput().isKeyDown(Input.KEY_UP)) {
-				walkTowardsTile("UP");
-			}
-		} else {
-			walkTowardsTile(lastmoved);
-		}
+	public boolean checkMapBounds() {
+		if (collisionRect.getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE) {
+			return true;
+		} else if (collisionRect.getX() < 0) {
+			return true;
+		} else if (collisionRect.getY() < 0) {
+			return true;
+		} else if (collisionRect.getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE) {
+			return true;
+		} else
+			return false;
 	}
 
-	// TODO: Use vector for point manipulation
-	public boolean walkTowardsTile(String dir) {
+	// TODO: minimize
+	public void walkTowardsTile(PlayerMovement direction) {
 		moving = true;
-		if (!rightcl && dir == "RIGHT") {
+		if (direction == PlayerMovement.RIGHT) {
 			if (pixelPosition.getX() < oldpos.getX() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED, pixelPosition.getY());
-				lastmoved = dir;
-				return true;
+				lastmoved = direction;
+				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
+				return;
 			}
-		} else if (!downcl && dir == "DOWN") {
+		} else if (direction == PlayerMovement.DOWN) {
 			if (pixelPosition.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() + GameConfig.PLAYER_SPEED);
-				lastmoved = dir;
-				return true;
+				lastmoved = direction;
+				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
+				return;
 			}
-		} else if (!leftcl && dir == "LEFT") {
+		} else if (direction == PlayerMovement.LEFT) {
 			if (pixelPosition.getX() > oldpos.getX() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() - GameConfig.PLAYER_SPEED, pixelPosition.getY());
-				lastmoved = dir;
-				return true;
+				lastmoved = direction;
+				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
+				return;
 			}
-		} else if (!upcl && dir == "UP") {
+		} else if (direction == PlayerMovement.UP) {
 			if (pixelPosition.getY() > oldpos.getY() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() - GameConfig.PLAYER_SPEED);
-				lastmoved = dir;
-				return true;
+				lastmoved = direction;
+				collisionRect.setFrame(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+						GameConfig.TILE_SIZE);
+				return;
 			}
 		}
 
-		oldpos.setLocation(pixelPosition.getX(), pixelPosition.getY());
+		oldpos.setLocation(getPosition());
 		moving = false;
-		return false;
+	}
+
+	public boolean isMoving() {
+		return moving;
+	}
+
+	public void setMoving(boolean moving) {
+		this.moving = moving;
+	}
+
+	public Point2D getOldpos() {
+		return oldpos;
+	}
+
+	public void setOldpos(Point2D oldpos) {
+		this.oldpos = oldpos;
+	}
+
+	public PlayerMovement getLastmoved() {
+		return lastmoved;
+	}
+
+	public void setLastmoved(PlayerMovement lastmoved) {
+		this.lastmoved = lastmoved;
+	}
+
+	public boolean isColliding() {
+		return colliding;
+	}
+
+	public void setColliding(boolean colliding) {
+		this.colliding = colliding;
 	}
 
 	public int getScore() {
@@ -121,6 +141,10 @@ public class Player extends GameEntity {
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	public boolean collidesWith(Rectangle2D rect) {
+		return collisionRect.intersects(rect);
 	}
 
 }
