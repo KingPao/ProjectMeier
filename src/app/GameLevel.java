@@ -32,14 +32,14 @@ public class GameLevel extends GameEntity {
 	public void checkCollisions() {
 		if (player.checkMapBounds()) {
 			player.blockMovement();
-			player.setBlocked(false);
+//			player.setBlocked(false);
 		}
 
 		for (Tile[] tiles : map.getTileMap()) {
 			for (Tile tile : tiles) {
 				if (tile.isCollidable() && tile.getCollisionRect().intersects(player.getCollisionRect())) {
 					player.blockMovement();
-					player.setBlocked(false);
+//					player.setBlocked(false);
 				}
 			}
 		}
@@ -58,6 +58,7 @@ public class GameLevel extends GameEntity {
 		}else {
 			player.setSprinting(false);
 		}
+
 		
 		if (!player.isMoving()) {
 			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {

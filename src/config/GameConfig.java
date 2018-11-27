@@ -26,7 +26,7 @@ public class GameConfig {
 	// GAME
 	public static final String GAME_TITLE = "Aim Trainer";
 	public static final boolean SHOW_FPS = true;
-	public static final int MAX_TIME = 60;
+	public static final int MAX_TIME = 300;
 	public static final int SCREEN_WIDTH = 1024;
 	public static final int SCREEN_HEIGHT = 576;
 }
