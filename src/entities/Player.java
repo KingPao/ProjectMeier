@@ -56,15 +56,12 @@ public class Player extends GameEntity {
 
 	@Override
 	public void render(Graphics g) {
-		//g.drawImage(heroSheet.getSprite(0, 0), pixelPosition.getX(), pixelPosition.getY());
-		
+		// g.drawImage(heroSheet.getSprite(0, 0), pixelPosition.getX(),
+		// pixelPosition.getY());
 		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY());
-
-
 	}
 
 	public void blockMovement() {
-
 		getPosition().setLocation(oldpos.getLocation());
 		collisionRect.setBounds(getPosition().getX(), getPosition().getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 		moving = false;
@@ -105,7 +102,7 @@ public class Player extends GameEntity {
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
 				currentAnimation = right;
-				
+
 				return;
 			}
 		} else if (direction == PlayerMovement.DOWN) {
@@ -160,14 +157,6 @@ public class Player extends GameEntity {
 	public void setMoving(boolean moving) {
 		this.moving = moving;
 	}
-
-//	public Point2D getOldpos() {
-//		return oldpos;
-//	}
-//
-//	public void setOldpos(Point2D oldpos) {
-//		this.oldpos = oldpos;
-//	}
 
 	public PlayerMovement getLastmoved() {
 		return lastmoved;
