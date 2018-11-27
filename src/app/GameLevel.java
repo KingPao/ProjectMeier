@@ -8,7 +8,7 @@ import behaviour.PlayerMovement;
 import config.GameConfig;
 import entities.GameEntity;
 import entities.Player;
-import graphics.SpriteSheet;
+import graphics.MeierSpriteSheet;
 import map.Tile;
 import map.TileMap;
 
@@ -18,7 +18,7 @@ public class GameLevel extends GameEntity {
 	private TileMap map;
 
 	public GameLevel() {
-		map = new TileMap(new SpriteSheet(GameConfig.SPRITESHEET_MAP));
+		map = new TileMap(new MeierSpriteSheet(GameConfig.SPRITESHEET_MAP));
 		player = new Player();
 	}
 
@@ -32,13 +32,15 @@ public class GameLevel extends GameEntity {
 	public void checkCollisions() {
 		if (player.checkMapBounds()) {
 			player.blockMovement();
+			player.setBlocked(false);
 		}
 
 		for (Tile[] tiles : map.getTileMap()) {
 			for (Tile tile : tiles) {
-				if (tile.isCollidable() && player.collidesWith(tile.getCollisionRect())) {
-
+				if (tile.isCollidable() && tile.getCollisionRect().intersects(player.getCollisionRect())) {
 					player.blockMovement();
+					player.setBlocked(false);
+
 				}
 			}
 		}
@@ -48,6 +50,7 @@ public class GameLevel extends GameEntity {
 	public void tick(GameContainer gc) {
 		handleInput(gc);
 		checkCollisions();
+
 	}
 
 	public void handleInput(GameContainer gc) {
@@ -55,8 +58,10 @@ public class GameLevel extends GameEntity {
 		if (!player.isMoving()) {
 			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
 				player.walkTowardsTile(PlayerMovement.RIGHT);
+
 			} else if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
 				player.walkTowardsTile(PlayerMovement.DOWN);
+
 			} else if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
 				player.walkTowardsTile(PlayerMovement.LEFT);
 			} else if (gc.getInput().isKeyDown(Input.KEY_UP)) {
@@ -64,6 +69,7 @@ public class GameLevel extends GameEntity {
 			}
 		} else {
 			player.walkTowardsTile(player.getLastmoved());
+
 		}
 	}
 

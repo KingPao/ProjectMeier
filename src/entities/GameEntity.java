@@ -1,24 +1,22 @@
 package entities;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Point;
+import org.newdawn.slick.geom.Rectangle;
 
 public abstract class GameEntity {
 
 	private int id;
-	protected Point2D pixelPosition;
-	protected Point2D gridPosition;
-	protected Rectangle2D collisionRect;
+	protected Point pixelPosition;
+	protected Rectangle collisionRect;
 	protected boolean collidable;
 
 	public GameEntity() {
 
 	}
 
-	public GameEntity(Point2D position) {
+	public GameEntity(Point position) {
 		this.pixelPosition = position;
 	}
 
@@ -34,7 +32,7 @@ public abstract class GameEntity {
 		this.id = id;
 	}
 
-	public Point2D getPosition() {
+	public Point getPosition() {
 		return pixelPosition;
 	}
 
@@ -46,31 +44,23 @@ public abstract class GameEntity {
 		this.collidable = collidable;
 	}
 
-	public void setPosition(Point2D position) {
+	public void setPosition(Point position) {
 		this.pixelPosition = position;
 	}
 
-	public Point2D getPixelPosition() {
+	public Point getPixelPosition() {
 		return pixelPosition;
 	}
 
-	public void setPixelPosition(Point2D pixelPosition) {
+	public void setPixelPosition(Point pixelPosition) {
 		this.pixelPosition = pixelPosition;
 	}
 
-	public Point2D getGridPosition() {
-		return gridPosition;
-	}
-
-	public void setGridPosition(Point2D gridPosition) {
-		this.gridPosition = gridPosition;
-	}
-
-	public Rectangle2D getCollisionRect() {
+	public Rectangle getCollisionRect() {
 		return collisionRect;
 	}
 
-	public void setCollisionRect(Rectangle2D collisionRect) {
+	public void setCollisionRect(Rectangle collisionRect) {
 		this.collisionRect = collisionRect;
 	}
 

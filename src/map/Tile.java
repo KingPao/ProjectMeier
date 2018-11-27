@@ -1,11 +1,10 @@
 package map;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Point;
+import org.newdawn.slick.geom.Rectangle;
 
 import config.GameConfig;
 import entities.GameEntity;
@@ -19,9 +18,9 @@ public class Tile extends GameEntity {
 	private Image tileTexture;
 
 	public Tile(Image image, int x, int y) {
-		super(new Point2D.Double(x, y));
-		this.collisionRect = new Rectangle2D.Double(x * GameConfig.TILE_SIZE, y * GameConfig.TILE_SIZE,
-				GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+		super(new Point(x, y));
+		this.collisionRect = new Rectangle(x * GameConfig.TILE_SIZE +1, y * GameConfig.TILE_SIZE +1,
+				GameConfig.TILE_SIZE-2, GameConfig.TILE_SIZE-2);
 		this.tileTexture = image;
 		this.collidable = false;
 	}
