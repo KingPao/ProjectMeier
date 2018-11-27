@@ -3,7 +3,7 @@ package config;
 public class GameConfig {
 
 	// PLAYER
-	public static final float PLAYER_SPEED = 2.5f;
+	public static final float PLAYER_SPEED = 2f;
 	public static final int ANIMATION_SPEED_MOVEMENT = 120;
 
 	// ENEMIES

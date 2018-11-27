@@ -23,8 +23,9 @@ public class Player extends GameEntity {
 	private PlayerMovement lastmoved = PlayerMovement.NONE;
 	// collides
 	private boolean colliding;
-
-	private float targetpos;
+	
+	private boolean sprinting;
+	private float sprintSpeed;
 
 	private SpriteSheet heroSheet;
 	private Animation currentAnimation, right, rightstand, down, downstand, left, leftstand, up, upstand;
@@ -33,7 +34,7 @@ public class Player extends GameEntity {
 		super(new Point(0, 0));
 		pixelPosition.setLocation(0, 0);
 		oldpos = new Point(pixelPosition.getX(), pixelPosition.getY());
-
+		sprintSpeed = 1f;
 		this.score = 0;
 		this.collisionRect = new Rectangle(0, 0, GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 		try {
@@ -71,9 +72,7 @@ public class Player extends GameEntity {
 		collisionRect.setBounds(getPosition().getX(), getPosition().getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 		moving = false;
 		blocked = true;
-		
 		setStandingAnimation();
-		
 	}
 	
 	public void setStandingAnimation() {
@@ -105,23 +104,26 @@ public class Player extends GameEntity {
 	public void walkTowardsTile(PlayerMovement direction) {
 
 		moving = true;
+		if(sprinting) {
+			sprintSpeed = 2.0f;
+
+			System.out.println("sprinting");
+		}else {
+			sprintSpeed = 1.0f;
+		}
 
 		if (direction == PlayerMovement.RIGHT) {
 			if (pixelPosition.getX() < oldpos.getX() + GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED, pixelPosition.getY());
-
+				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED * sprintSpeed, pixelPosition.getY());
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
 				currentAnimation = right;
-
 				return;
 			}
 		} else if (direction == PlayerMovement.DOWN) {
 			if (pixelPosition.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
-
-				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() + GameConfig.PLAYER_SPEED);
-
+				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() + GameConfig.PLAYER_SPEED * sprintSpeed);
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
@@ -130,8 +132,7 @@ public class Player extends GameEntity {
 			}
 		} else if (direction == PlayerMovement.LEFT) {
 			if (pixelPosition.getX() > oldpos.getX() - GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX() - GameConfig.PLAYER_SPEED, pixelPosition.getY());
-
+				pixelPosition.setLocation(pixelPosition.getX() - GameConfig.PLAYER_SPEED * sprintSpeed, pixelPosition.getY());
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
@@ -140,7 +141,7 @@ public class Player extends GameEntity {
 			}
 		} else if (direction == PlayerMovement.UP) {
 			if (pixelPosition.getY() > oldpos.getY() - GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() - GameConfig.PLAYER_SPEED);
+				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() - GameConfig.PLAYER_SPEED * sprintSpeed);
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
@@ -157,7 +158,7 @@ public class Player extends GameEntity {
 				GameConfig.TILE_SIZE);
 		moving = false;
 		blocked = false;
-
+		
 		setStandingAnimation();
 
 	}
@@ -205,5 +206,15 @@ public class Player extends GameEntity {
 	public void setBlocked(boolean blocked) {
 		this.blocked = blocked;
 	}
+
+	public boolean isSprinting() {
+		return sprinting;
+	}
+
+	public void setSprinting(boolean sprinting) {
+		this.sprinting = sprinting;
+	}
+	
+	
 
 }

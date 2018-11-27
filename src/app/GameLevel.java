@@ -33,7 +33,6 @@ public class GameLevel extends GameEntity {
 		if (player.checkMapBounds()) {
 			player.blockMovement();
 			player.setBlocked(false);
-
 		}
 
 		for (Tile[] tiles : map.getTileMap()) {
@@ -41,8 +40,6 @@ public class GameLevel extends GameEntity {
 				if (tile.isCollidable() && tile.getCollisionRect().intersects(player.getCollisionRect())) {
 					player.blockMovement();
 					player.setBlocked(false);
-
-
 				}
 			}
 		}
@@ -52,18 +49,21 @@ public class GameLevel extends GameEntity {
 	public void tick(GameContainer gc) {
 		handleInput(gc);
 		checkCollisions();
-
-		
 	}
 
 	public void handleInput(GameContainer gc) {
 
+		if(gc.getInput().isKeyDown(Input.KEY_LCONTROL)) {
+			player.setSprinting(true);
+		}else {
+			player.setSprinting(false);
+		}
+		
 		if (!player.isMoving()) {
 			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
 				player.walkTowardsTile(PlayerMovement.RIGHT);
 			} else if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
 				player.walkTowardsTile(PlayerMovement.DOWN);
-
 			} else if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
 				player.walkTowardsTile(PlayerMovement.LEFT);
 			} else if (gc.getInput().isKeyDown(Input.KEY_UP)) {
