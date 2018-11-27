@@ -29,20 +29,20 @@ public class Player extends GameEntity {
 
 	public Player() {
 		super(new Point(0, 0));
-		pixelPosition.setLocation(0, 0);
+		pixelPosition.setLocation(384, 384);
 		this.score = 0;
 		this.collisionRect = new Rectangle(0, 0, GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 		try {
 			this.heroSheet = new SpriteSheet(GameConfig.PLAYER_SHEET, 32, 32);
 			downstand = new Animation(heroSheet, 1, 0, 1, 0, true, 1, true);
-			down = new Animation(heroSheet, 0, 0, 2, 0, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
+			down = new Animation(heroSheet, 0, 0, 3, 0, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
 			rightstand = new Animation(heroSheet, 1, 2, 1, 2, true, 1, true);
-			right = new Animation(heroSheet, 0, 2, 2, 2, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
-			currentAnimation = downstand;
-			up = new Animation(heroSheet, 0, 3, 2, 3, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
+			right = new Animation(heroSheet, 0, 2, 3, 2, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
+			up = new Animation(heroSheet, 0, 3, 3, 3, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
 			upstand = new Animation(heroSheet, 1, 3, 1, 3, true, 1, true);
 			leftstand = new Animation(heroSheet, 1, 1, 1, 1, true, 1, true);
-			left = new Animation(heroSheet, 0, 1, 2, 1, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
+			left = new Animation(heroSheet, 0, 1, 3, 1, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
+			currentAnimation = up;
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -56,8 +56,10 @@ public class Player extends GameEntity {
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(heroSheet.getSprite(0, 0), pixelPosition.getX(), pixelPosition.getY());
+		//g.drawImage(heroSheet.getSprite(0, 0), pixelPosition.getX(), pixelPosition.getY());
+		
 		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY());
+
 
 	}
 
@@ -103,6 +105,7 @@ public class Player extends GameEntity {
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
 				currentAnimation = right;
+				
 				return;
 			}
 		} else if (direction == PlayerMovement.DOWN) {

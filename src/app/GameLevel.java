@@ -48,13 +48,6 @@ public class GameLevel extends GameEntity {
 
 	@Override
 	public void tick(GameContainer gc) {
-		if(player.isBlocked()) {
-			System.out.println("blocked");
-		}
-		if(player.isMoving()) {
-			System.out.println("moving");
-		}
-
 		handleInput(gc);
 		checkCollisions();
 

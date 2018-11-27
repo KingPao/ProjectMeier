@@ -64,6 +64,7 @@ public class GameApp extends BasicGame {
 			appgc.setDisplayMode(GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT, false);
 			appgc.setShowFPS(GameConfig.SHOW_FPS);
 			appgc.setTargetFrameRate(60);
+			appgc.setVSync(true);
 			appgc.start();
 
 		} catch (SlickException ex) {

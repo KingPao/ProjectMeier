@@ -4,7 +4,7 @@ public class GameConfig {
 
 	// PLAYER
 	public static final float PLAYER_SPEED = 2f;
-	public static final int ANIMATION_SPEED_MOVEMENT = 100;
+	public static final int ANIMATION_SPEED_MOVEMENT = 120;
 
 	// ENEMIES
 	public static final int NUMBER_ENEMIES = 2;
@@ -13,7 +13,7 @@ public class GameConfig {
 	public static final double ENEMY_MAX_GROWTH = 0.09;
 
 	// FILES
-	public static final String PLAYER_SHEET = "res/hero.png";
+	public static final String PLAYER_SHEET = "res/heroanimation.png";
 	public static final String SPRITESHEET_MAP = "res/desert.png";
 	public static final String FILE_DEMOMAP = "res/demomap_coordinates.csv";
 	public static final String FILE_DEMOMAP_COLLIDABLE = "res/demomap_collidable_tiles.csv";
