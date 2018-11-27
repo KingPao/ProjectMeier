@@ -18,18 +18,22 @@ public class Player extends GameEntity {
 	// currently moving
 	private boolean moving, blocked;
 	// previous position during moving to a new tile
-	private Point oldpos = new Point(0, 0);
+	private Point oldpos;
 	// keep moving into same direction until new tile is reached
 	private PlayerMovement lastmoved = PlayerMovement.NONE;
 	// collides
 	private boolean colliding;
+
+	private float targetpos;
 
 	private SpriteSheet heroSheet;
 	private Animation currentAnimation, right, rightstand, down, downstand, left, leftstand, up, upstand;
 
 	public Player() {
 		super(new Point(0, 0));
-		pixelPosition.setLocation(384, 384);
+		pixelPosition.setLocation(0, 0);
+		oldpos = new Point(pixelPosition.getX(), pixelPosition.getY());
+
 		this.score = 0;
 		this.collisionRect = new Rectangle(0, 0, GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 		try {
@@ -58,6 +62,7 @@ public class Player extends GameEntity {
 	public void render(Graphics g) {
 		// g.drawImage(heroSheet.getSprite(0, 0), pixelPosition.getX(),
 		// pixelPosition.getY());
+		g.draw(collisionRect);
 		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY());
 	}
 
@@ -66,6 +71,12 @@ public class Player extends GameEntity {
 		collisionRect.setBounds(getPosition().getX(), getPosition().getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 		moving = false;
 		blocked = true;
+		
+		setStandingAnimation();
+		
+	}
+	
+	public void setStandingAnimation() {
 		if (lastmoved == PlayerMovement.DOWN) {
 			currentAnimation = downstand;
 		} else if (lastmoved == PlayerMovement.RIGHT) {
@@ -78,13 +89,13 @@ public class Player extends GameEntity {
 	}
 
 	public boolean checkMapBounds() {
-		if (collisionRect.getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE) {
+		if (collisionRect.getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE+1) {
 			return true;
-		} else if (collisionRect.getX() < 0) {
+		} else if (collisionRect.getX() < -1) {
 			return true;
-		} else if (collisionRect.getY() < 0) {
+		} else if (collisionRect.getY() < -1) {
 			return true;
-		} else if (collisionRect.getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE) {
+		} else if (collisionRect.getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE+1) {
 			return true;
 		} else
 			return false;
@@ -98,6 +109,7 @@ public class Player extends GameEntity {
 		if (direction == PlayerMovement.RIGHT) {
 			if (pixelPosition.getX() < oldpos.getX() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED, pixelPosition.getY());
+
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
@@ -106,9 +118,10 @@ public class Player extends GameEntity {
 				return;
 			}
 		} else if (direction == PlayerMovement.DOWN) {
-			if (pixelPosition.getY() < oldpos.getY() + 32) {
+			if (pixelPosition.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
 
 				pixelPosition.setLocation(pixelPosition.getX(), pixelPosition.getY() + GameConfig.PLAYER_SPEED);
+
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
@@ -118,6 +131,7 @@ public class Player extends GameEntity {
 		} else if (direction == PlayerMovement.LEFT) {
 			if (pixelPosition.getX() > oldpos.getX() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() - GameConfig.PLAYER_SPEED, pixelPosition.getY());
+
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
@@ -134,19 +148,17 @@ public class Player extends GameEntity {
 				return;
 			}
 		}
-
+		
+		pixelPosition.setX(GameConfig.TILE_SIZE * Math.round(pixelPosition.getX() / GameConfig.TILE_SIZE));
+		pixelPosition.setY(GameConfig.TILE_SIZE * Math.round(pixelPosition.getY() / GameConfig.TILE_SIZE));
+		
 		oldpos.setLocation(getPosition().getLocation());
+		collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+				GameConfig.TILE_SIZE);
 		moving = false;
 		blocked = false;
-		if (lastmoved == PlayerMovement.DOWN) {
-			currentAnimation = downstand;
-		} else if (lastmoved == PlayerMovement.RIGHT) {
-			currentAnimation = rightstand;
-		} else if (lastmoved == PlayerMovement.UP) {
-			currentAnimation = upstand;
-		} else if (lastmoved == PlayerMovement.LEFT) {
-			currentAnimation = leftstand;
-		}
+
+		setStandingAnimation();
 
 	}
 
