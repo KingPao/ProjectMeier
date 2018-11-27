@@ -38,11 +38,11 @@ public class Player extends GameEntity {
 			down = new Animation(heroSheet, 0, 0, 3, 0, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
 			rightstand = new Animation(heroSheet, 1, 2, 1, 2, true, 1, true);
 			right = new Animation(heroSheet, 0, 2, 3, 2, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
-			up = new Animation(heroSheet, 0, 3, 3, 3, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
 			upstand = new Animation(heroSheet, 1, 3, 1, 3, true, 1, true);
+			up = new Animation(heroSheet, 0, 3, 3, 3, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
 			leftstand = new Animation(heroSheet, 1, 1, 1, 1, true, 1, true);
 			left = new Animation(heroSheet, 0, 1, 3, 1, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
-			currentAnimation = up;
+			currentAnimation = downstand;
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
