@@ -6,7 +6,7 @@ import org.newdawn.slick.SlickException;
 import config.GameConfig;
 import map.Tile;
 
-public class SpriteSheet {
+public class MeierSpriteSheet {
 
 	// the "sprite sheet" or texture atlas image
 	private Image spriteSheet;
@@ -15,7 +15,7 @@ public class SpriteSheet {
 	private Tile[][] tileTextures;
 
 	// TODO: beautify
-	public SpriteSheet(String path) {
+	public MeierSpriteSheet(String path) {
 		try {
 			this.spriteSheet = new Image(path, false, Image.FILTER_NEAREST);
 		} catch (SlickException e) {
@@ -28,8 +28,6 @@ public class SpriteSheet {
 				tileTextures[x][y] = new Tile(spriteSheet.getSubImage(x * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * x),
 						y * GameConfig.TILE_SIZE + (GameConfig.TILE_SPACING * y), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE), x, y);
-				
-
 			}
 		}
 	}

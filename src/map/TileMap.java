@@ -9,23 +9,24 @@ import java.util.Scanner;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 
 import config.GameConfig;
 import entities.GameEntity;
-import graphics.SpriteSheet;
+import graphics.MeierSpriteSheet;
 
 public class TileMap extends GameEntity {
 
 	private Tile[][] tileMap;
 	private Point[][] coordinateMap;
-	private SpriteSheet sprites;
+	private MeierSpriteSheet sprites;
 	private int columnsMap;
 	private int rowsMap;
 	private int columnsMatrix;
 	private int rowsMatrix;
 	private boolean[][] collideMatrix;
 
-	public TileMap(SpriteSheet sprites) {
+	public TileMap(MeierSpriteSheet sprites) {
 		this.sprites = sprites;
 
 		try {
@@ -79,7 +80,6 @@ public class TileMap extends GameEntity {
 				coordinateMap[x][y] = new Point(spriteX, spriteY);
 			}
 		}
-
 	}
 
 	void generateMap() {
@@ -107,9 +107,18 @@ public class TileMap extends GameEntity {
 			for (int y = 0; y < GameConfig.SCREEN_HEIGHT / GameConfig.TILE_SIZE; y++) {
 				tileMap[x][y].getTileTexture().drawEmbedded(x * GameConfig.TILE_SIZE, y * GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+
 			}
 		}
 		sprites.getSpriteSheet().endUse();
+//		for (int x = 0; x < GameConfig.SCREEN_WIDTH / GameConfig.TILE_SIZE; x++) {
+//			for (int y = 0; y < GameConfig.SCREEN_HEIGHT / GameConfig.TILE_SIZE; y++) {
+//				if (tileMap[x][y].isCollidable()) {
+//					g.drawRect(tileMap[x][y].getCollisionRect().getX(), tileMap[x][y].getCollisionRect().getY(),
+//							tileMap[x][y].getCollisionRect().getWidth(), tileMap[x][y].getCollisionRect().getHeight());
+//				}
+//			}
+//		}
 	}
 
 	@Override
@@ -125,11 +134,11 @@ public class TileMap extends GameEntity {
 		this.tileMap = tileMap;
 	}
 
-	public SpriteSheet getSprites() {
+	public MeierSpriteSheet getSprites() {
 		return sprites;
 	}
 
-	public void setSprites(SpriteSheet sprites) {
+	public void setSprites(MeierSpriteSheet sprites) {
 		this.sprites = sprites;
 	}
 

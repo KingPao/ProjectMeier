@@ -3,15 +3,16 @@ package config;
 public class GameConfig {
 
 	// PLAYER
-	public static final double PLAYER_SPEED = 4;
+	public static final float PLAYER_SPEED = 2f;
 
 	// ENEMIES
-	public static final int NUMBER_ENEMIES = 4;
+	public static final int NUMBER_ENEMIES = 2;
 	public static final int ENEMY_MAX_SIZE = 80;
 	public static final double ENEMY_MIN_GROWTH = 0.04;
 	public static final double ENEMY_MAX_GROWTH = 0.09;
 
 	// FILES
+	public static final String PLAYER_SHEET = "res/hero.png";
 	public static final String SPRITESHEET_MAP = "res/desert.png";
 	public static final String FILE_DEMOMAP = "res/demomap_coordinates.csv";
 	public static final String FILE_DEMOMAP_COLLIDABLE = "res/demomap_collidable_tiles.csv";

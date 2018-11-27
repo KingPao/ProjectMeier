@@ -8,7 +8,7 @@ import behaviour.PlayerMovement;
 import config.GameConfig;
 import entities.GameEntity;
 import entities.Player;
-import graphics.SpriteSheet;
+import graphics.MeierSpriteSheet;
 import map.Tile;
 import map.TileMap;
 
@@ -18,7 +18,7 @@ public class GameLevel extends GameEntity {
 	private TileMap map;
 
 	public GameLevel() {
-		map = new TileMap(new SpriteSheet(GameConfig.SPRITESHEET_MAP));
+		map = new TileMap(new MeierSpriteSheet(GameConfig.SPRITESHEET_MAP));
 		player = new Player();
 	}
 
@@ -36,8 +36,7 @@ public class GameLevel extends GameEntity {
 
 		for (Tile[] tiles : map.getTileMap()) {
 			for (Tile tile : tiles) {
-				if (tile.isCollidable() && player.collidesWith(tile.getCollisionRect())) {
-
+				if (tile.isCollidable() && tile.getCollisionRect().intersects(player.getCollisionRect())) {
 					player.blockMovement();
 				}
 			}
@@ -48,6 +47,7 @@ public class GameLevel extends GameEntity {
 	public void tick(GameContainer gc) {
 		handleInput(gc);
 		checkCollisions();
+
 	}
 
 	public void handleInput(GameContainer gc) {

@@ -52,8 +52,8 @@ public class GameApp extends BasicGame {
 
 	public void printScreen(Graphics g) {
 		g.drawString("Time left: " + String.valueOf(GameConfig.MAX_TIME - time / 1000), 400, 10);
-		g.drawString(String.valueOf(Math.round(level.getPlayer().getPosition().getX())) + "/"
-				+ String.valueOf(Math.round(level.getPlayer().getPosition().getY())), 100, 10);
+		g.drawString(String.valueOf(level.getPlayer().getPosition().getX()) + "/"
+				+ String.valueOf(level.getPlayer().getPosition().getY()), 100, 10);
 		g.drawString("Score: " + String.valueOf(level.getPlayer().getScore()), 250, 10);
 	}
 
