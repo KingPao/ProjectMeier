@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Rectangle;
 
 import config.GameConfig;
 import entities.GameEntity;

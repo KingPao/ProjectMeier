@@ -4,6 +4,7 @@ public class GameConfig {
 
 	// PLAYER
 	public static final float PLAYER_SPEED = 2f;
+	public static final int ANIMATION_SPEED_MOVEMENT = 100;
 
 	// ENEMIES
 	public static final int NUMBER_ENEMIES = 2;
