@@ -40,7 +40,7 @@ public class Player extends GameEntity {
 		try {
 			this.heroSheet = new SpriteSheet(GameConfig.PLAYER_SHEET, 32, 32);
 			downstand = new Animation(heroSheet, 1, 0, 1, 0, true, 1, true);
-			down = new Animation(heroSheet, 0, 0, 3, 0, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
+			down = new Animation(heroSheet, 0, 0, 3, 0, true, 120, true);
 			rightstand = new Animation(heroSheet, 1, 2, 1, 2, true, 1, true);
 			right = new Animation(heroSheet, 0, 2, 3, 2, true, GameConfig.ANIMATION_SPEED_MOVEMENT, true);
 			upstand = new Animation(heroSheet, 1, 3, 1, 3, true, 1, true);
@@ -61,7 +61,7 @@ public class Player extends GameEntity {
 
 	@Override
 	public void render(Graphics g) {
-		g.draw(collisionRect);
+//		g.draw(collisionRect);
 		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY());
 	}
 
