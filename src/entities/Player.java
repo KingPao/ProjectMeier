@@ -60,9 +60,9 @@ public class Player extends GameEntity {
 	}
 
 	@Override
-	public void render() {
+	public void render(Graphics g) {
 		if(GameConfig.DEBUG_MODE)
-			new Graphics().draw(collisionRect);
+			g.draw(collisionRect);
 		
 		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY());
 	}

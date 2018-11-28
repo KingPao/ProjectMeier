@@ -36,13 +36,13 @@ public class MapManager extends GameEntity {
 	}
 
 	@Override
-	public void render() {
+	public void render(Graphics g) {
 		tiledMap.render(0, 0);
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				if (GameConfig.DEBUG_MODE)
-					new Graphics().drawRect(x * GameConfig.TILE_SIZE + 1, y * GameConfig.TILE_SIZE + 1,
-							GameConfig.TILE_SIZE - 2, GameConfig.TILE_SIZE - 2);
+					g.drawRect(x * GameConfig.TILE_SIZE + 1, y * GameConfig.TILE_SIZE + 1, GameConfig.TILE_SIZE - 2,
+							GameConfig.TILE_SIZE - 2);
 			}
 		}
 	}
@@ -74,6 +74,10 @@ public class MapManager extends GameEntity {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public TiledMap getTiledMap() {
+		return tiledMap;
 	}
 
 }
