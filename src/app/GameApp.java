@@ -33,7 +33,8 @@ public class GameApp extends BasicGame {
 
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
-		level.render();
+		
+		level.render(g);
 		if(GameConfig.DEBUG_MODE)
 			printScreen(g);
 
