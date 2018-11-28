@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -13,9 +14,7 @@ import config.GameConfig;
 
 public class GameApp extends BasicGame {
 
-	private boolean gameover;
 	private GameLevel level;
-	private int time;
 
 	public GameApp(String gamename) {
 		super(gamename);
@@ -23,38 +22,34 @@ public class GameApp extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		gameover = false;
 		level = new GameLevel();
 
 	}
 
 	@Override
 	public void update(GameContainer gc, int i) throws SlickException {
-		if (!gameover) {
-			level.tick(gc);
-			time += i;
-		}
-
-		if (time / 1000 >= GameConfig.MAX_TIME) {
-			gameover = true;
-		}
-
+		level.tick(gc);
 	}
 
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
-		if (!gameover) {
-			level.render(g);
+		level.render();
+		if(GameConfig.DEBUG_MODE)
 			printScreen(g);
-			
-		}
+
 	}
 
 	public void printScreen(Graphics g) {
-		g.drawString("Time left: " + String.valueOf(GameConfig.MAX_TIME - time / 1000), 400, 10);
+
+		Graphics blackbox = new Graphics();
+		blackbox.setColor(Color.black);
+		blackbox.fillRect(10, 10, 200, 20);
+		
 		g.drawString(String.valueOf(level.getPlayer().getPosition().getX()) + "/"
 				+ String.valueOf(level.getPlayer().getPosition().getY()), 100, 10);
-		g.drawString("Score: " + String.valueOf(level.getPlayer().getScore()), 250, 10);
+
+		g.flush();
+		blackbox.flush();
 	}
 
 	public static void main(String[] args) {

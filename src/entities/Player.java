@@ -60,8 +60,10 @@ public class Player extends GameEntity {
 	}
 
 	@Override
-	public void render(Graphics g) {
-//		g.draw(collisionRect);
+	public void render() {
+		if(GameConfig.DEBUG_MODE)
+			new Graphics().draw(collisionRect);
+		
 		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY());
 	}
 
@@ -85,13 +87,13 @@ public class Player extends GameEntity {
 	}
 
 	public boolean checkMapBounds() {
-		if (collisionRect.getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE + 1) {
+		if (collisionRect.getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE) {
 			return true;
-		} else if (collisionRect.getX() < -1) {
+		} else if (collisionRect.getX() < 0) {
 			return true;
-		} else if (collisionRect.getY() < -1) {
+		} else if (collisionRect.getY() < 0) {
 			return true;
-		} else if (collisionRect.getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE + 1) {
+		} else if (collisionRect.getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE) {
 			return true;
 		} else
 			return false;
@@ -99,8 +101,8 @@ public class Player extends GameEntity {
 
 	public void sprint() {
 		/*
-		 * Avoid wrong collision detection by allowing sprint trigger only at convenient times
-		 * Only allow sprint if current position is divisible by 4.
+		 * Avoid wrong collision detection by allowing sprint trigger only at convenient
+		 * times Only allow sprint if current position is divisible by 4.
 		 */
 		if (pixelPosition.getX() % 4 == 0 && pixelPosition.getY() % 4 == 0) {
 			sprintSpeed = 2.0f;
@@ -111,7 +113,7 @@ public class Player extends GameEntity {
 	// TODO: minimize
 	public void walkTowardsTile(PlayerMovement direction) {
 		moving = true;
-		
+
 		if (sprinting) {
 			sprint();
 		} else {
@@ -164,7 +166,7 @@ public class Player extends GameEntity {
 		blocked = false;
 
 		setStandingAnimation();
-		
+
 		oldpos.setLocation(getPosition().getLocation());
 		collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 

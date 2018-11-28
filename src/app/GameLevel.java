@@ -3,43 +3,45 @@ package app;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 
 import behaviour.PlayerMovement;
-import config.GameConfig;
 import entities.GameEntity;
 import entities.Player;
-import graphics.MeierSpriteSheet;
-import map.Tile;
-import map.TileMap;
+import map.MapManager;
 
 public class GameLevel extends GameEntity {
 
 	private Player player;
-	private TileMap map;
+	private MapManager mapManager;
 
 	public GameLevel() {
-		map = new TileMap(new MeierSpriteSheet(GameConfig.SPRITESHEET_MAP));
 		player = new Player();
+		try {
+			mapManager = new MapManager();
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public void render(Graphics g) {
-		map.render(g);
-		player.render(g);
+	public void render() {
+		mapManager.render();
+		player.render();
 
 	}
 
 	public void checkCollisions() {
 		if (player.checkMapBounds()) {
 			player.blockMovement();
-//			player.setBlocked(false);
 		}
 
-		for (Tile[] tiles : map.getTileMap()) {
-			for (Tile tile : tiles) {
-				if (tile.isCollidable() && tile.getCollisionRect().intersects(player.getCollisionRect())) {
+		for (int x = 0; x < 32; x++) {
+			for (int y = 0; y < 18; y++) {
+				if (mapManager.getCollideMatrix()[x][y]
+						&& new Rectangle(x * 32 + 1, y * 32 + 1, 30, 30).intersects(player.getCollisionRect())) {
 					player.blockMovement();
-//					player.setBlocked(false);
 				}
 			}
 		}
@@ -53,13 +55,12 @@ public class GameLevel extends GameEntity {
 
 	public void handleInput(GameContainer gc) {
 
-		if(gc.getInput().isKeyDown(Input.KEY_LCONTROL)) {
+		if (gc.getInput().isKeyDown(Input.KEY_LCONTROL)) {
 			player.setSprinting(true);
-		}else {
+		} else {
 			player.setSprinting(false);
 		}
 
-		
 		if (!player.isMoving()) {
 			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
 				player.walkTowardsTile(PlayerMovement.RIGHT);
@@ -74,7 +75,6 @@ public class GameLevel extends GameEntity {
 			player.walkTowardsTile(player.getLastmoved());
 		}
 
-
 	}
 
 	public Player getPlayer() {
@@ -83,14 +83,6 @@ public class GameLevel extends GameEntity {
 
 	public void setPlayer(Player player) {
 		this.player = player;
-	}
-
-	public TileMap getMap() {
-		return map;
-	}
-
-	public void setMap(TileMap map) {
-		this.map = map;
 	}
 
 }
