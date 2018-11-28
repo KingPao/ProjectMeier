@@ -1,12 +1,12 @@
 package app;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
 import behaviour.PlayerMovement;
+import config.GameConfig;
 import entities.GameEntity;
 import entities.Player;
 import map.MapManager;
@@ -37,10 +37,11 @@ public class GameLevel extends GameEntity {
 			player.blockMovement();
 		}
 
-		for (int x = 0; x < 32; x++) {
-			for (int y = 0; y < 18; y++) {
-				if (mapManager.getCollideMatrix()[x][y]
-						&& new Rectangle(x * 32 + 1, y * 32 + 1, 30, 30).intersects(player.getCollisionRect())) {
+		for (int x = 0; x < mapManager.getWidth(); x++) {
+			for (int y = 0; y < mapManager.getHeight(); y++) {
+				if (mapManager.getCollideMatrix()[x][y] && new Rectangle(x * GameConfig.TILE_SIZE + 1,
+						y * GameConfig.TILE_SIZE + 1, GameConfig.TILE_SIZE - 2, GameConfig.TILE_SIZE - 2)
+								.intersects(player.getCollisionRect())) {
 					player.blockMovement();
 				}
 			}
