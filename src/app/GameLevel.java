@@ -32,14 +32,12 @@ public class GameLevel extends GameEntity {
 	public void checkCollisions() {
 		if (player.checkMapBounds()) {
 			player.blockMovement();
-//			player.setBlocked(false);
 		}
 
 		for (Tile[] tiles : map.getTileMap()) {
 			for (Tile tile : tiles) {
 				if (tile.isCollidable() && tile.getCollisionRect().intersects(player.getCollisionRect())) {
 					player.blockMovement();
-//					player.setBlocked(false);
 				}
 			}
 		}
@@ -53,27 +51,44 @@ public class GameLevel extends GameEntity {
 
 	public void handleInput(GameContainer gc) {
 
-		if(gc.getInput().isKeyDown(Input.KEY_LCONTROL)) {
+		/*
+		 * sprinting
+		 */
+		if (!player.isJumping() && gc.getInput().isKeyDown(Input.KEY_LCONTROL))
 			player.setSprinting(true);
-		}else {
+		else
 			player.setSprinting(false);
+
+		/*
+		 * jumping
+		 */
+		if (!player.isSprinting() && !player.isJumping() && gc.getInput().isKeyDown(Input.KEY_SPACE)) {
+			player.setJumping(true);
+			player.setGravity(-4f);
+			System.out.println("jump");
 		}
 
-		
-		if (!player.isMoving()) {
-			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
-				player.walkTowardsTile(PlayerMovement.RIGHT);
-			} else if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
-				player.walkTowardsTile(PlayerMovement.DOWN);
-			} else if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
-				player.walkTowardsTile(PlayerMovement.LEFT);
-			} else if (gc.getInput().isKeyDown(Input.KEY_UP)) {
-				player.walkTowardsTile(PlayerMovement.UP);
-			}
-		} else {
+		if (player.isJumping()) {
+			player.jump();
+		}
+
+		/*
+		 * movement
+		 */
+		if (!player.isMoving() && gc.getInput().isKeyDown(Input.KEY_RIGHT))
+			player.walkTowardsTile(PlayerMovement.RIGHT);
+		else if (!player.isMoving() && gc.getInput().isKeyDown(Input.KEY_DOWN))
+			player.walkTowardsTile(PlayerMovement.DOWN);
+		else if (!player.isMoving() && gc.getInput().isKeyDown(Input.KEY_LEFT))
+			player.walkTowardsTile(PlayerMovement.LEFT);
+		else if (!player.isMoving() && gc.getInput().isKeyDown(Input.KEY_UP))
+			player.walkTowardsTile(PlayerMovement.UP);
+
+		/*
+		 * keep moving into direction
+		 */
+		if (player.isMoving())
 			player.walkTowardsTile(player.getLastmoved());
-		}
-
 
 	}
 

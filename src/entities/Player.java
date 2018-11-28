@@ -16,16 +16,15 @@ public class Player extends GameEntity {
 	// states
 	private int score;
 	// currently moving
-	private boolean moving, blocked;
-	// previous position during moving to a new tile
+	private boolean moving;	// previous position during moving to a new tile
 	private Point oldpos;
 	// keep moving into same direction until new tile is reached
 	private PlayerMovement lastmoved = PlayerMovement.NONE;
-	// collides
-	private boolean colliding;
-
 	private boolean sprinting;
 	private float sprintSpeed;
+	private float gravity = 0;
+	
+	private boolean jumping;
 
 	private SpriteSheet heroSheet;
 	private Animation currentAnimation, right, rightstand, down, downstand, left, leftstand, up, upstand;
@@ -61,7 +60,7 @@ public class Player extends GameEntity {
 
 	@Override
 	public void render(Graphics g) {
-//		g.draw(collisionRect);
+		g.draw(collisionRect);
 		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY());
 	}
 
@@ -82,6 +81,28 @@ public class Player extends GameEntity {
 		} else if (lastmoved == PlayerMovement.LEFT) {
 			currentAnimation = leftstand;
 		}
+	}
+	
+	public void jump() {
+
+		gravity += 0.25f;
+		if(gravity < 4) {			
+			pixelPosition.setY(pixelPosition.getY()+gravity);
+		}else {
+			collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+					GameConfig.TILE_SIZE);
+			jumping = false;
+		}
+	}
+	
+	
+
+	public float getGravity() {
+		return gravity;
+	}
+
+	public void setGravity(float gravity) {
+		this.gravity = gravity;
 	}
 
 	public boolean checkMapBounds() {
@@ -107,24 +128,28 @@ public class Player extends GameEntity {
 		}
 
 	}
-
+	
 	// TODO: minimize
 	public void walkTowardsTile(PlayerMovement direction) {
 		moving = true;
-		
+
 		if (sprinting) {
 			sprint();
 		} else {
 			sprintSpeed = 1.0f;
 		}
+		
 		if (direction == PlayerMovement.RIGHT) {
 			if (pixelPosition.getX() < oldpos.getX() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED * sprintSpeed,
 						pixelPosition.getY());
 				lastmoved = direction;
+				
+				if(!jumping)
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
 				currentAnimation = right;
+				
 				return;
 			}
 		} else if (direction == PlayerMovement.DOWN) {
@@ -132,6 +157,8 @@ public class Player extends GameEntity {
 				pixelPosition.setLocation(pixelPosition.getX(),
 						pixelPosition.getY() + Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 1.0f) * 1.0f);
 				lastmoved = direction;
+				
+				if(!jumping)
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
 				currentAnimation = down;
@@ -143,6 +170,8 @@ public class Player extends GameEntity {
 						pixelPosition.getX() - Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f,
 						pixelPosition.getY());
 				lastmoved = direction;
+				
+				if(!jumping)
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
 				currentAnimation = left;
@@ -153,6 +182,8 @@ public class Player extends GameEntity {
 				pixelPosition.setLocation(pixelPosition.getX(),
 						pixelPosition.getY() - Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f);
 				lastmoved = direction;
+				
+				if(!jumping)
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
 				currentAnimation = up;
@@ -160,13 +191,13 @@ public class Player extends GameEntity {
 			}
 		}
 
-		moving = false;
-		blocked = false;
-
-		setStandingAnimation();
 		
+		
+		moving = false;
+		setStandingAnimation();
 		oldpos.setLocation(getPosition().getLocation());
-		collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+		if(!jumping)
+			collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 
 	}
 
@@ -186,14 +217,6 @@ public class Player extends GameEntity {
 		this.lastmoved = lastmoved;
 	}
 
-	public boolean isColliding() {
-		return colliding;
-	}
-
-	public void setColliding(boolean colliding) {
-		this.colliding = colliding;
-	}
-
 	public int getScore() {
 		return score;
 	}
@@ -206,12 +229,12 @@ public class Player extends GameEntity {
 		return collisionRect.intersects(rect);
 	}
 
-	public boolean isBlocked() {
-		return blocked;
+	public boolean isJumping() {
+		return jumping;
 	}
 
-	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
+	public void setJumping(boolean jumping) {
+		this.jumping = jumping;
 	}
 
 	public boolean isSprinting() {
