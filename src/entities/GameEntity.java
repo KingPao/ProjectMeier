@@ -20,7 +20,7 @@ public abstract class GameEntity {
 		this.pixelPosition = position;
 	}
 
-	public abstract void render(Graphics g);
+	public abstract void render();
 
 	public abstract void tick(GameContainer gc);
 
