@@ -110,12 +110,12 @@ public class TileMap extends GameEntity {
 			}
 		}
 		sprites.getSpriteSheet().endUse();
-//		for (int x = 0; x < GameConfig.SCREEN_WIDTH / GameConfig.TILE_SIZE; x++) {
-//			for (int y = 0; y < GameConfig.SCREEN_HEIGHT / GameConfig.TILE_SIZE; y++) {
-//				g.drawRect(tileMap[x][y].getPosition().getX() * 32, tileMap[x][y].getPosition().getY()*32,
-//						32, 32);
-//			}
-//		}
+		for (int x = 0; x < GameConfig.SCREEN_WIDTH / GameConfig.TILE_SIZE; x++) {
+			for (int y = 0; y < GameConfig.SCREEN_HEIGHT / GameConfig.TILE_SIZE; y++) {
+				g.drawRect(tileMap[x][y].getPosition().getX() * 32, tileMap[x][y].getPosition().getY()*32,
+						32, 32);
+			}
+		}
 	}
 
 	@Override

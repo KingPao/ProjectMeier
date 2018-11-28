@@ -1,5 +1,5 @@
 package behaviour;
 
 public enum PlayerMovement {
-	LEFT, RIGHT, UP, DOWN, NONE;
+	JUMPLEFT, JUMPRIGHT, JUMPUP, JUMPDOWN, WALKLEFT, WALKRIGHT, WALKUP, WALKDOWN, NONE;
 }

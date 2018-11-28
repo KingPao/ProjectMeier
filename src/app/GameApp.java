@@ -63,7 +63,7 @@ public class GameApp extends BasicGame {
 			appgc = new AppGameContainer(new GameApp(GameConfig.GAME_TITLE));
 			appgc.setDisplayMode(GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT, false);
 			appgc.setShowFPS(GameConfig.SHOW_FPS);
-			appgc.setTargetFrameRate(60);
+			appgc.setTargetFrameRate(10);
 			appgc.setVSync(true);
 			appgc.start();
 

@@ -16,26 +16,27 @@ public class Player extends GameEntity {
 	// states
 	private int score;
 	// currently moving
-	private boolean moving;	// previous position during moving to a new tile
+	private boolean moving; // previous position during moving to a new tile
 	private Point oldpos;
 	// keep moving into same direction until new tile is reached
 	private PlayerMovement lastmoved = PlayerMovement.NONE;
 	private boolean sprinting;
 	private float sprintSpeed;
 	private float gravity = 0;
-	
+
 	private boolean jumping;
 
 	private SpriteSheet heroSheet;
 	private Animation currentAnimation, right, rightstand, down, downstand, left, leftstand, up, upstand;
 
 	public Player() {
-		super(new Point(0, 0));
-		pixelPosition.setLocation(0, 0);
+		super(new Point(320, 320));
+		pixelPosition.setLocation(320, 320);
 		oldpos = new Point(pixelPosition.getX(), pixelPosition.getY());
+		this.collisionRect = new Rectangle(320, 320, GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+
 		sprintSpeed = 1f;
 		this.score = 0;
-		this.collisionRect = new Rectangle(0, 0, GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 		try {
 			this.heroSheet = new SpriteSheet(GameConfig.PLAYER_SHEET, 32, 32);
 			downstand = new Animation(heroSheet, 1, 0, 1, 0, true, 1, true);
@@ -71,31 +72,38 @@ public class Player extends GameEntity {
 		setStandingAnimation();
 	}
 
+	public void blockJump() {
+
+	}
+
 	public void setStandingAnimation() {
-		if (lastmoved == PlayerMovement.DOWN) {
+		if (lastmoved == PlayerMovement.WALKDOWN) {
 			currentAnimation = downstand;
-		} else if (lastmoved == PlayerMovement.RIGHT) {
+		} else if (lastmoved == PlayerMovement.WALKRIGHT) {
 			currentAnimation = rightstand;
-		} else if (lastmoved == PlayerMovement.UP) {
+		} else if (lastmoved == PlayerMovement.WALKUP) {
 			currentAnimation = upstand;
-		} else if (lastmoved == PlayerMovement.LEFT) {
+		} else if (lastmoved == PlayerMovement.WALKLEFT) {
 			currentAnimation = leftstand;
 		}
 	}
-	
+
 	public void jump() {
 
-		gravity += 0.25f;
-		if(gravity < 4) {			
-			pixelPosition.setY(pixelPosition.getY()+gravity);
-		}else {
+		if (jumping) {
+			gravity += 0.25f;
+			
+			pixelPosition.setY(pixelPosition.getY() + gravity);
+			
+			
+			return;
+		} else {
 			collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 					GameConfig.TILE_SIZE);
 			jumping = false;
 		}
+
 	}
-	
-	
 
 	public float getGravity() {
 		return gravity;
@@ -120,15 +128,15 @@ public class Player extends GameEntity {
 
 	public void sprint() {
 		/*
-		 * Avoid wrong collision detection by allowing sprint trigger only at convenient times
-		 * Only allow sprint if current position is divisible by 4.
+		 * Avoid wrong collision detection by allowing sprint trigger only at convenient
+		 * times Only allow sprint if current position is divisible by 4.
 		 */
 		if (pixelPosition.getX() % 4 == 0 && pixelPosition.getY() % 4 == 0) {
 			sprintSpeed = 2.0f;
 		}
 
 	}
-	
+
 	// TODO: minimize
 	public void walkTowardsTile(PlayerMovement direction) {
 		moving = true;
@@ -138,66 +146,77 @@ public class Player extends GameEntity {
 		} else {
 			sprintSpeed = 1.0f;
 		}
-		
-		if (direction == PlayerMovement.RIGHT) {
+
+		if (direction == PlayerMovement.WALKRIGHT) {
 			if (pixelPosition.getX() < oldpos.getX() + GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED * sprintSpeed,
-						pixelPosition.getY());
-				lastmoved = direction;
+				pixelPosition.setX(pixelPosition.getX() + Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f);
 				
-				if(!jumping)
-				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
+				if (!jumping)
+					collisionRect.setY(pixelPosition.getY());
+				
+				collisionRect.setX(collisionRect.getX() + Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f);
+				
 				currentAnimation = right;
+				lastmoved = direction;
 				
 				return;
 			}
-		} else if (direction == PlayerMovement.DOWN) {
-			if (pixelPosition.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX(),
-						pixelPosition.getY() + Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 1.0f) * 1.0f);
-				lastmoved = direction;
+		} else if (direction == PlayerMovement.WALKDOWN) {
+			if (collisionRect.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
 				
-				if(!jumping)
-				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
+				if(!jumping) {
+					collisionRect.setY(pixelPosition.getY() + Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f);
+					pixelPosition.setY(collisionRect.getY());
+
+				}else{
+					collisionRect.setY(collisionRect.getY() + Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f);
+					pixelPosition.setY(pixelPosition.getY());
+				}
+				
+				lastmoved = direction;
+
+	
+
 				currentAnimation = down;
 				return;
 			}
-		} else if (direction == PlayerMovement.LEFT) {
+		} else if (direction == PlayerMovement.WALKLEFT) {
 			if (pixelPosition.getX() > oldpos.getX() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(
 						pixelPosition.getX() - Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f,
 						pixelPosition.getY());
 				lastmoved = direction;
-				
-				if(!jumping)
-				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
+
+				if (!jumping)
+					collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+							GameConfig.TILE_SIZE);
 				currentAnimation = left;
 				return;
 			}
-		} else if (direction == PlayerMovement.UP) {
-			if (pixelPosition.getY() > oldpos.getY() - GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX(),
-						pixelPosition.getY() - Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f);
+		} else if (direction == PlayerMovement.WALKUP) {
+			if (collisionRect.getY() > oldpos.getY() - GameConfig.TILE_SIZE) {
+				pixelPosition.setLocation(collisionRect.getX(),
+						collisionRect.getY() - Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f);
 				lastmoved = direction;
-				
-				if(!jumping)
-				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
+
+				if (!jumping)
+					collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
+							GameConfig.TILE_SIZE);
 				currentAnimation = up;
 				return;
 			}
 		}
 
-		
-		
 		moving = false;
 		setStandingAnimation();
 		oldpos.setLocation(getPosition().getLocation());
-		if(!jumping)
-			collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+		
+		if (!jumping) {
+			collisionRect.setBounds(collisionRect.getX(), collisionRect.getY(), GameConfig.TILE_SIZE,
+					GameConfig.TILE_SIZE);
+		}else {
+			
+		}
 
 	}
 

@@ -24,6 +24,7 @@ public class GameLevel extends GameEntity {
 
 	@Override
 	public void render(Graphics g) {
+
 		map.render(g);
 		player.render(g);
 
@@ -37,7 +38,8 @@ public class GameLevel extends GameEntity {
 		for (Tile[] tiles : map.getTileMap()) {
 			for (Tile tile : tiles) {
 				if (tile.isCollidable() && tile.getCollisionRect().intersects(player.getCollisionRect())) {
-					player.blockMovement();
+					if (!player.isJumping())
+						player.blockMovement();
 				}
 			}
 		}
@@ -66,6 +68,7 @@ public class GameLevel extends GameEntity {
 			player.setJumping(true);
 			player.setGravity(-4f);
 			System.out.println("jump");
+
 		}
 
 		if (player.isJumping()) {
@@ -76,13 +79,13 @@ public class GameLevel extends GameEntity {
 		 * movement
 		 */
 		if (!player.isMoving() && gc.getInput().isKeyDown(Input.KEY_RIGHT))
-			player.walkTowardsTile(PlayerMovement.RIGHT);
+			player.walkTowardsTile(PlayerMovement.WALKRIGHT);
 		else if (!player.isMoving() && gc.getInput().isKeyDown(Input.KEY_DOWN))
-			player.walkTowardsTile(PlayerMovement.DOWN);
+			player.walkTowardsTile(PlayerMovement.WALKDOWN);
 		else if (!player.isMoving() && gc.getInput().isKeyDown(Input.KEY_LEFT))
-			player.walkTowardsTile(PlayerMovement.LEFT);
+			player.walkTowardsTile(PlayerMovement.WALKLEFT);
 		else if (!player.isMoving() && gc.getInput().isKeyDown(Input.KEY_UP))
-			player.walkTowardsTile(PlayerMovement.UP);
+			player.walkTowardsTile(PlayerMovement.WALKUP);
 
 		/*
 		 * keep moving into direction
