@@ -109,13 +109,13 @@ public class Player extends GameEntity {
 		 * Avoid wrong collision detection by allowing sprint trigger only at convenient
 		 * times Only allow sprint if current position is divisible by 4.
 		 */
-		if (pixelPosition.getX() % 4 == 0 && pixelPosition.getY() % 4 == 0) {
+		if (pixelPosition.getX() % 2 == 0 && pixelPosition.getY() % 2 == 0) {
 			sprintSpeed = 2.0f;
 		}
 
 	}
 
-	// TODO: minimize
+	// TODO: implement lerp movement
 	public void walkTowardsTile(PlayerMovement direction) {
 		moving = true;
 
@@ -137,7 +137,7 @@ public class Player extends GameEntity {
 		} else if (direction == PlayerMovement.DOWN) {
 			if (pixelPosition.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX(),
-						pixelPosition.getY() + Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 1.0f) * 1.0f);
+						pixelPosition.getY() + GameConfig.PLAYER_SPEED * sprintSpeed);
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
@@ -147,7 +147,7 @@ public class Player extends GameEntity {
 		} else if (direction == PlayerMovement.LEFT) {
 			if (pixelPosition.getX() > oldpos.getX() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(
-						pixelPosition.getX() - Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f,
+						pixelPosition.getX() - GameConfig.PLAYER_SPEED * sprintSpeed,
 						pixelPosition.getY());
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
@@ -158,7 +158,7 @@ public class Player extends GameEntity {
 		} else if (direction == PlayerMovement.UP) {
 			if (pixelPosition.getY() > oldpos.getY() - GameConfig.TILE_SIZE) {
 				pixelPosition.setLocation(pixelPosition.getX(),
-						pixelPosition.getY() - Math.round(GameConfig.PLAYER_SPEED * sprintSpeed / 2.0f) * 2.0f);
+						pixelPosition.getY() - GameConfig.PLAYER_SPEED * sprintSpeed);
 				lastmoved = direction;
 				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
 						GameConfig.TILE_SIZE);
@@ -167,11 +167,10 @@ public class Player extends GameEntity {
 			}
 		}
 
-		moving = false;
-		blocked = false;
 
-		setStandingAnimation();
 
+//		setStandingAnimation();
+	moving = false;
 		oldpos.setLocation(getPosition().getLocation());
 		collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
 
