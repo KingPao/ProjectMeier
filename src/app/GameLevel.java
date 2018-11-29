@@ -1,12 +1,14 @@
 package app;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
 import behaviour.PlayerMovement;
 import config.GameConfig;
+import entities.Camera;
 import entities.GameEntity;
 import entities.Player;
 import map.MapManager;
@@ -15,23 +17,28 @@ public class GameLevel extends GameEntity {
 
 	private Player player;
 	private MapManager mapManager;
+	private Camera camera;
 
 	public GameLevel() {
 		player = new Player();
+		camera = new Camera(player);
 		try {
 			mapManager = new MapManager();
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
+
 	@Override
-	public void render() {
-		mapManager.render();
+	public void render(Graphics g) {
+		camera.render(g);
+		mapManager.render(g);
 		mapManager.getTiledMap().render(0, 0, 0);
 		mapManager.getTiledMap().render(0, 0, 1);
 		mapManager.getTiledMap().render(0, 0, 2);
-		player.render();
+		player.render(g);
 		mapManager.getTiledMap().render(0, 0, 3);
 
 	}
@@ -54,6 +61,7 @@ public class GameLevel extends GameEntity {
 
 	@Override
 	public void tick(GameContainer gc) {
+		camera.tick(gc);
 		handleInput(gc);
 		checkCollisions();
 	}

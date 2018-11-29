@@ -60,12 +60,16 @@ public class Player extends GameEntity {
 	}
 
 	@Override
-	public void render() {
-		if(GameConfig.DEBUG_MODE)
-			new Graphics().draw(collisionRect);
+	public void render(Graphics g) {
+
+
+//			new Graphics().draw(collisionRect);
 //			new Graphics().fillOval(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
-		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
-//			currentAnimation.draw
+			currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+			if(GameConfig.DEBUG_MODE)
+				g.draw(collisionRect);
+		
+
 	}
 
 	public void blockMovement() {

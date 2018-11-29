@@ -1,6 +1,7 @@
 package entities;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 
@@ -19,7 +20,7 @@ public abstract class GameEntity {
 		this.pixelPosition = position;
 	}
 
-	public abstract void render();
+	public abstract void render(Graphics g);
 
 	public abstract void tick(GameContainer gc);
 

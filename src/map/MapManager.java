@@ -37,19 +37,14 @@ public class MapManager extends GameEntity {
 
 	}
 
-	@Override
-	public void render() {
-//		tiledMap.render(0, 0, 0);
-//		tiledMap.render(0, 0, 1);
-//		tiledMap.render(0, 0, 3);
-//		tiledMap.render(0, 0, 4);
-		
-//		tiledMap.render(0, 0, 1);
+
+	public void render(Graphics g) {
+
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				if (GameConfig.DEBUG_MODE)
-					new Graphics().drawRect(x * GameConfig.TILE_SIZE + 1, y * GameConfig.TILE_SIZE + 1,
-							GameConfig.TILE_SIZE - 2, GameConfig.TILE_SIZE - 2);
+					g.drawRect(x * GameConfig.TILE_SIZE + 1, y * GameConfig.TILE_SIZE + 1, GameConfig.TILE_SIZE - 2,
+							GameConfig.TILE_SIZE - 2);
 			}
 		}
 	}
@@ -87,10 +82,5 @@ public class MapManager extends GameEntity {
 		return tiledMap;
 	}
 
-	public void setTiledMap(TiledMap tiledMap) {
-		this.tiledMap = tiledMap;
-	}
-	
-	
 
 }
