@@ -63,8 +63,9 @@ public class Player extends GameEntity {
 	public void render() {
 		if(GameConfig.DEBUG_MODE)
 			new Graphics().draw(collisionRect);
-		
-		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY());
+//			new Graphics().fillOval(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+//			currentAnimation.draw
 	}
 
 	public void blockMovement() {

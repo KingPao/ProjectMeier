@@ -28,7 +28,11 @@ public class GameLevel extends GameEntity {
 	@Override
 	public void render() {
 		mapManager.render();
+		mapManager.getTiledMap().render(0, 0, 0);
+		mapManager.getTiledMap().render(0, 0, 1);
+		mapManager.getTiledMap().render(0, 0, 2);
 		player.render();
+		mapManager.getTiledMap().render(0, 0, 3);
 
 	}
 

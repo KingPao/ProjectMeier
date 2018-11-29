@@ -11,7 +11,7 @@ public class GameConfig {
 	public static final String FILE_DEMOMAP = "res/demomap_coordinates.csv";
 
 	// TILES
-	public static final int TILE_SIZE = 32;
+	public static final int TILE_SIZE = 16;
 
 	// GAME
 	public static final String GAME_TITLE = "Project Meier";

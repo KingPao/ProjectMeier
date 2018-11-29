@@ -15,7 +15,7 @@ public class MapManager extends GameEntity {
 	private int width, height;
 
 	public MapManager() throws SlickException {
-		tiledMap = new TiledMap("/res/demomap.tmx", "/res");
+		tiledMap = new TiledMap("/res/grassland.tmx", "/res");
 
 		generateMap();
 	}
@@ -27,9 +27,11 @@ public class MapManager extends GameEntity {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				if (tiledMap.getTileProperty(tiledMap.getTileId(x, y, 0), "col", "x").equals("1")) {
+				if (tiledMap.getTileProperty(tiledMap.getTileId(x, y, 4), "col", "x").equals("1")) {
 					collideMatrix[x][y] = true;
+
 				}
+				System.out.println(collideMatrix[x][y]);
 			}
 		}
 
@@ -37,7 +39,12 @@ public class MapManager extends GameEntity {
 
 	@Override
 	public void render() {
-		tiledMap.render(0, 0);
+//		tiledMap.render(0, 0, 0);
+//		tiledMap.render(0, 0, 1);
+//		tiledMap.render(0, 0, 3);
+//		tiledMap.render(0, 0, 4);
+		
+//		tiledMap.render(0, 0, 1);
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				if (GameConfig.DEBUG_MODE)
@@ -75,5 +82,15 @@ public class MapManager extends GameEntity {
 	public void setHeight(int height) {
 		this.height = height;
 	}
+
+	public TiledMap getTiledMap() {
+		return tiledMap;
+	}
+
+	public void setTiledMap(TiledMap tiledMap) {
+		this.tiledMap = tiledMap;
+	}
+	
+	
 
 }
