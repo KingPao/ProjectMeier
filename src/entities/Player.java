@@ -13,17 +13,11 @@ import config.GameConfig;
 
 public class Player extends GameEntity {
 
-	// states
-	private int score;
 	// currently moving
-	private boolean moving, blocked;
-	// previous position during moving to a new tile
-	private Point oldpos;
+	private boolean moving;
 	// keep moving into same direction until new tile is reached
 	private PlayerMovement lastmoved = PlayerMovement.NONE;
 	// collides
-	private boolean colliding;
-
 	private boolean sprinting;
 	private float sprintSpeed;
 
@@ -33,10 +27,8 @@ public class Player extends GameEntity {
 	public Player() {
 		super(new Point(0, 0));
 		pixelPosition.setLocation(0, 0);
-		oldpos = new Point(pixelPosition.getX(), pixelPosition.getY());
 		sprintSpeed = 1f;
-		this.score = 0;
-		this.collisionRect = new Rectangle(0, 0, GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+		this.collisionRect = new Rectangle(4, 8, GameConfig.TILE_SIZE - 8, GameConfig.TILE_SIZE / 2);
 		try {
 			this.heroSheet = new SpriteSheet(GameConfig.PLAYER_SHEET, 32, 32);
 			downstand = new Animation(heroSheet, 1, 0, 1, 0, true, 1, true);
@@ -62,46 +54,82 @@ public class Player extends GameEntity {
 	@Override
 	public void render(Graphics g) {
 
+		currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
+		if (GameConfig.DEBUG_MODE)
+			g.draw(collisionRect);
 
-//			new Graphics().draw(collisionRect);
-//			new Graphics().fillOval(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
-			currentAnimation.draw(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
-			if(GameConfig.DEBUG_MODE)
-				g.draw(collisionRect);
-		
+	}
 
+	public float getSprintSpeed() {
+		return sprintSpeed;
+	}
+
+	public void setSprintSpeed(float sprintSpeed) {
+		this.sprintSpeed = sprintSpeed;
 	}
 
 	public void blockMovement() {
-		getPosition().setLocation(oldpos.getLocation());
-		collisionRect.setBounds(getPosition().getX(), getPosition().getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
-		moving = false;
-		setStandingAnimation();
+		switch (lastmoved) {
+		case RIGHT:
+			getPosition().setLocation(getPosition().getX() - GameConfig.PLAYER_SPEED * sprintSpeed,
+					getPosition().getY());
+			break;
+		case LEFT:
+			getPosition().setLocation(getPosition().getX() + GameConfig.PLAYER_SPEED * sprintSpeed,
+					getPosition().getY());
+			break;
+		case UP:
+			getPosition().setLocation(getPosition().getX(),
+					getPosition().getY() + GameConfig.PLAYER_SPEED * sprintSpeed);
+			break;
+		case DOWN:
+			getPosition().setLocation(getPosition().getX(),
+					getPosition().getY() - GameConfig.PLAYER_SPEED * sprintSpeed);
+			break;
+		default:
+			break;
+		}
+
+		updateCollisionRectangle();
+
 	}
 
 	public void setStandingAnimation() {
-		if (lastmoved == PlayerMovement.DOWN) {
-			currentAnimation = downstand;
-		} else if (lastmoved == PlayerMovement.RIGHT) {
+		
+		switch (lastmoved) {
+		case RIGHT:
 			currentAnimation = rightstand;
-		} else if (lastmoved == PlayerMovement.UP) {
-			currentAnimation = upstand;
-		} else if (lastmoved == PlayerMovement.LEFT) {
+			break;
+		case LEFT:
 			currentAnimation = leftstand;
+			break;
+		case UP:
+			currentAnimation = upstand;
+			break;
+		case DOWN:
+			currentAnimation = downstand;
+			break;
+		default:
+			break;
 		}
 	}
 
-	public boolean checkMapBounds() {
+	public void updateCollisionRectangle() {
+		collisionRect.setX(pixelPosition.getX() + 4);
+		collisionRect.setY(pixelPosition.getY() + 8);
+	}
+
+	public void checkMapBounds() {
 		if (collisionRect.getX() > GameConfig.SCREEN_WIDTH - GameConfig.TILE_SIZE) {
-			return true;
+			blockMovement();
 		} else if (collisionRect.getX() < 0) {
-			return true;
+			blockMovement();
 		} else if (collisionRect.getY() < 0) {
-			return true;
+			blockMovement();
 		} else if (collisionRect.getY() > GameConfig.SCREEN_HEIGHT - GameConfig.TILE_SIZE) {
-			return true;
-		} else
-			return false;
+			blockMovement();
+		}
+
 	}
 
 	public void sprint() {
@@ -109,71 +137,50 @@ public class Player extends GameEntity {
 		 * Avoid wrong collision detection by allowing sprint trigger only at convenient
 		 * times Only allow sprint if current position is divisible by 4.
 		 */
-		if (pixelPosition.getX() % 2 == 0 && pixelPosition.getY() % 2 == 0) {
-			sprintSpeed = 2.0f;
-		}
+//		if (pixelPosition.getX() % 2 == 0 && pixelPosition.getY() % 2 == 0) {
+		sprintSpeed = 2.0f;
+//		}
 
 	}
 
-	// TODO: implement lerp movement
-	public void walkTowardsTile(PlayerMovement direction) {
-		moving = true;
-
+	public void normalWalking(PlayerMovement direction) {
+		
 		if (sprinting) {
 			sprint();
 		} else {
 			sprintSpeed = 1.0f;
 		}
-		if (direction == PlayerMovement.RIGHT) {
-			if (pixelPosition.getX() < oldpos.getX() + GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED * sprintSpeed,
-						pixelPosition.getY());
-				lastmoved = direction;
-				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
-				currentAnimation = right;
-				return;
-			}
-		} else if (direction == PlayerMovement.DOWN) {
-			if (pixelPosition.getY() < oldpos.getY() + GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX(),
-						pixelPosition.getY() + GameConfig.PLAYER_SPEED * sprintSpeed);
-				lastmoved = direction;
-				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
-				currentAnimation = down;
-				return;
-			}
-		} else if (direction == PlayerMovement.LEFT) {
-			if (pixelPosition.getX() > oldpos.getX() - GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(
-						pixelPosition.getX() - GameConfig.PLAYER_SPEED * sprintSpeed,
-						pixelPosition.getY());
-				lastmoved = direction;
-				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
-				currentAnimation = left;
-				return;
-			}
-		} else if (direction == PlayerMovement.UP) {
-			if (pixelPosition.getY() > oldpos.getY() - GameConfig.TILE_SIZE) {
-				pixelPosition.setLocation(pixelPosition.getX(),
-						pixelPosition.getY() - GameConfig.PLAYER_SPEED * sprintSpeed);
-				lastmoved = direction;
-				collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE,
-						GameConfig.TILE_SIZE);
-				currentAnimation = up;
-				return;
-			}
+
+		switch (direction) {
+		case RIGHT:
+			pixelPosition.setLocation(pixelPosition.getX() + GameConfig.PLAYER_SPEED * sprintSpeed,
+					pixelPosition.getY());
+			currentAnimation = right;
+			moving = true;
+			break;
+		case LEFT:
+			pixelPosition.setLocation(pixelPosition.getX() - GameConfig.PLAYER_SPEED * sprintSpeed,
+					pixelPosition.getY());
+			currentAnimation = left;
+			moving = true;
+			break;
+		case UP:
+			pixelPosition.setLocation(pixelPosition.getX(),
+					pixelPosition.getY() - GameConfig.PLAYER_SPEED * sprintSpeed);
+			currentAnimation = up;
+			moving = true;
+			break;
+		case DOWN:
+			pixelPosition.setLocation(pixelPosition.getX(),
+					pixelPosition.getY() + GameConfig.PLAYER_SPEED * sprintSpeed);
+			currentAnimation = down;
+			moving = true;
+			break;
+		default:
+			break;
 		}
-
-
-
-//		setStandingAnimation();
-	moving = false;
-		oldpos.setLocation(getPosition().getLocation());
-		collisionRect.setBounds(pixelPosition.getX(), pixelPosition.getY(), GameConfig.TILE_SIZE, GameConfig.TILE_SIZE);
-
+		lastmoved = direction;
+		updateCollisionRectangle();
 	}
 
 	public boolean isMoving() {
@@ -192,32 +199,9 @@ public class Player extends GameEntity {
 		this.lastmoved = lastmoved;
 	}
 
-	public boolean isColliding() {
-		return colliding;
-	}
-
-	public void setColliding(boolean colliding) {
-		this.colliding = colliding;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
-	}
 
 	public boolean collidesWith(Rectangle rect) {
 		return collisionRect.intersects(rect);
-	}
-
-	public boolean isBlocked() {
-		return blocked;
-	}
-
-	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
 	}
 
 	public boolean isSprinting() {

@@ -5,11 +5,6 @@ import org.newdawn.slick.Graphics;
 
 public class Camera extends GameEntity {
 
-	public float offsetMaxX;
-	public float offsetMaxY;
-	public float offsetMinX;
-	public float offsetMinY;
-
 	public float camX;
 	public float camY;
 
@@ -17,11 +12,6 @@ public class Camera extends GameEntity {
 
 	public Camera(Player p) {
 
-		// Setting offset max's and minimums
-		offsetMaxX = 0;
-		offsetMaxY = 0;
-		offsetMinX = 0;
-		offsetMinY = 0;
 
 		player = p;
 
@@ -32,14 +22,12 @@ public class Camera extends GameEntity {
 
 		g.translate(-camX, -camY);
 		g.scale(2f, 2f);
-
 	}
 
 	@Override
 	public void tick(GameContainer gc) {
-		camX = player.getPosition().getX() *2 - (gc.getWidth() / 2);
-		camY = player.getPosition().getY() *2- (gc.getHeight() / 2);
-
+		camX = player.getPosition().getX() * 2 - (gc.getWidth() / 2);
+		camY = player.getPosition().getY() * 2 - (gc.getHeight() / 2);
 	}
 
 }

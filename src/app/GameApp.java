@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -22,8 +21,8 @@ public class GameApp extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		level = new GameLevel();
 
+		level = new GameLevel();
 	}
 
 	@Override
@@ -35,23 +34,11 @@ public class GameApp extends BasicGame {
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		
 		level.render(g);
-		if(GameConfig.DEBUG_MODE)
-			printScreen(g);
+		level.renderDebugInfo();
+
 
 	}
 
-	public void printScreen(Graphics g) {
-
-		Graphics blackbox = new Graphics();
-		blackbox.setColor(Color.black);
-		blackbox.fillRect(10, 10, 200, 20);
-		
-		g.drawString(String.valueOf(level.getPlayer().getPosition().getX()) + "/"
-				+ String.valueOf(level.getPlayer().getPosition().getY()), 100, 10);
-
-		g.flush();
-		blackbox.flush();
-	}
 
 	public static void main(String[] args) {
 		try {

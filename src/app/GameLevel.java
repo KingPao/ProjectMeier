@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.gui.TextField;
 
 import behaviour.PlayerMovement;
 import config.GameConfig;
@@ -18,6 +19,7 @@ public class GameLevel extends GameEntity {
 	private Player player;
 	private MapManager mapManager;
 	private Camera camera;
+	private TextField text;
 
 	public GameLevel() {
 		player = new Player();
@@ -27,32 +29,35 @@ public class GameLevel extends GameEntity {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
+	public void renderDebugInfo() {
+
+
+
+	}
 
 	@Override
 	public void render(Graphics g) {
 		camera.render(g);
-		mapManager.render(g);
 		mapManager.getTiledMap().render(0, 0, 0);
 		mapManager.getTiledMap().render(0, 0, 1);
-		mapManager.getTiledMap().render(0, 0, 2);
 		player.render(g);
-		mapManager.getTiledMap().render(0, 0, 3);
+		mapManager.getTiledMap().render(0, 0, 2);
+		mapManager.render(g);
+
 
 	}
 
 	public void checkCollisions() {
-		if (player.checkMapBounds()) {
-			player.blockMovement();
-		}
+		player.checkMapBounds();
 
 		for (int x = 0; x < mapManager.getWidth(); x++) {
 			for (int y = 0; y < mapManager.getHeight(); y++) {
 				if (mapManager.getCollideMatrix()[x][y] && new Rectangle(x * GameConfig.TILE_SIZE + 1,
-						y * GameConfig.TILE_SIZE + 1, GameConfig.TILE_SIZE - 2, GameConfig.TILE_SIZE - 2)
-								.intersects(player.getCollisionRect())) {
+						y * GameConfig.TILE_SIZE + 1, GameConfig.TILE_SIZE - 2,
+						GameConfig.TILE_SIZE - 2).intersects(player.getCollisionRect())) {
 					player.blockMovement();
 				}
 			}
@@ -61,6 +66,7 @@ public class GameLevel extends GameEntity {
 
 	@Override
 	public void tick(GameContainer gc) {
+		System.out.println(player.getCollisionRect().getX() + " | " + player.getCollisionRect().getY());
 		camera.tick(gc);
 		handleInput(gc);
 		checkCollisions();
@@ -74,20 +80,23 @@ public class GameLevel extends GameEntity {
 			player.setSprinting(false);
 		}
 
-		if (!player.isMoving()) {
-			if (gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
-				player.walkTowardsTile(PlayerMovement.RIGHT);
-			} else if (gc.getInput().isKeyDown(Input.KEY_DOWN)) {
-				player.walkTowardsTile(PlayerMovement.DOWN);
-			} else if (gc.getInput().isKeyDown(Input.KEY_LEFT)) {
-				player.walkTowardsTile(PlayerMovement.LEFT);
-			} else if (gc.getInput().isKeyDown(Input.KEY_UP)) {
-				player.walkTowardsTile(PlayerMovement.UP);
-			}
+		if (gc.getInput().isKeyDown(Input.KEY_D)) {
+			player.normalWalking(PlayerMovement.RIGHT);
+		} else if (gc.getInput().isKeyDown(Input.KEY_S)) {
+			player.normalWalking(PlayerMovement.DOWN);
+		} else if (gc.getInput().isKeyDown(Input.KEY_A)) {
+			player.normalWalking(PlayerMovement.LEFT);
+		} else if (gc.getInput().isKeyDown(Input.KEY_W)) {
+			player.normalWalking(PlayerMovement.UP);
 		} else {
-			player.walkTowardsTile(player.getLastmoved());
+			player.setStandingAnimation();
 		}
+		if (!GameConfig.DEBUG_MODE && gc.getInput().isKeyDown(Input.KEY_0)) {
+			GameConfig.DEBUG_MODE = true;
 
+		} else if (GameConfig.DEBUG_MODE && gc.getInput().isKeyDown(Input.KEY_0)) {
+			GameConfig.DEBUG_MODE = false;
+		}
 	}
 
 	public Player getPlayer() {

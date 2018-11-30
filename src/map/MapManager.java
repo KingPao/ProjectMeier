@@ -7,15 +7,19 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import config.GameConfig;
 import entities.GameEntity;
+import tiled.core.Map;
+import tiled.io.TMXMapReader;;
 
 public class MapManager extends GameEntity {
 
 	private boolean[][] collideMatrix;
 	private TiledMap tiledMap;
 	private int width, height;
+	Map map;
+	TMXMapReader mapReader;
 
 	public MapManager() throws SlickException {
-		tiledMap = new TiledMap("/res/grassland.tmx", "/res");
+		tiledMap = new TiledMap("/res/unbenannt.tmx", "/res");
 
 		generateMap();
 	}
@@ -27,24 +31,24 @@ public class MapManager extends GameEntity {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				if (tiledMap.getTileProperty(tiledMap.getTileId(x, y, 4), "col", "x").equals("1")) {
-					collideMatrix[x][y] = true;
 
+				if (tiledMap.getTileProperty(tiledMap.getTileId(x, y, 3), "col", "x").equals("1")) {
+					collideMatrix[x][y] = true;
 				}
-				System.out.println(collideMatrix[x][y]);
 			}
 		}
-
 	}
-
 
 	public void render(Graphics g) {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				if (GameConfig.DEBUG_MODE)
-					g.drawRect(x * GameConfig.TILE_SIZE + 1, y * GameConfig.TILE_SIZE + 1, GameConfig.TILE_SIZE - 2,
-							GameConfig.TILE_SIZE - 2);
+				if (GameConfig.DEBUG_MODE) {
+					if (collideMatrix[x][y]) {
+						g.drawRect(x * GameConfig.TILE_SIZE, y * GameConfig.TILE_SIZE, GameConfig.TILE_SIZE,
+								GameConfig.TILE_SIZE);
+					}
+				}
 			}
 		}
 	}
@@ -81,6 +85,5 @@ public class MapManager extends GameEntity {
 	public TiledMap getTiledMap() {
 		return tiledMap;
 	}
-
 
 }

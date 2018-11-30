@@ -10,7 +10,6 @@ public abstract class GameEntity {
 	private int id;
 	protected Point pixelPosition;
 	protected Rectangle collisionRect;
-	protected boolean collidable;
 
 	public GameEntity() {
 
@@ -34,14 +33,6 @@ public abstract class GameEntity {
 
 	public Point getPosition() {
 		return pixelPosition;
-	}
-
-	public boolean isCollidable() {
-		return collidable;
-	}
-
-	public void setCollidable(boolean collidable) {
-		this.collidable = collidable;
 	}
 
 	public void setPosition(Point position) {

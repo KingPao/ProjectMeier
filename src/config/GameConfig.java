@@ -18,5 +18,5 @@ public class GameConfig {
 	public static final boolean SHOW_FPS = true;
 	public static final int SCREEN_WIDTH = 1024;
 	public static final int SCREEN_HEIGHT = 576;
-	public static final boolean DEBUG_MODE = false;
+	public static boolean DEBUG_MODE = true;
 }
